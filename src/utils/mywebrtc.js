@@ -154,7 +154,7 @@ MyWebRTC.prototype.handleSuccess = async function(stream) {
     if(!window.meterRefresh)
     window.meterRefresh = setInterval(() => {
       let sound = soundMeter.slow.toFixed(2)
-      //console.log(sound);// while > 0.02,speaking
+      // console.log(sound);// while > 0.02,speaking
       if(sound > 0.02 && showSpeaking == false) {
         // console.log(2)
         that.sendToGdevelop("showSpeaking", {
@@ -217,6 +217,7 @@ MyWebRTC.prototype.closeMedia = function (e) {
   if(e == 0) {
     clearInterval(window.meterRefresh)
     window.meterRefresh = null
+    // console.log(4)
     this.sendToGdevelop("showSpeaking", {
       status: 4
     })

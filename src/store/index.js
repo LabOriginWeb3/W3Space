@@ -159,6 +159,10 @@ export default new Vuex.Store({
       state.helpStatus[name] = true;
       localStorage.setItem("helpStep", JSON.stringify(state.helpStatus));
     },
+    clearHelp(state) {
+      state.helpStatus = {helpStep:0, move:true};
+      localStorage.setItem("helpStep", JSON.stringify(state.helpStatus));
+    },
   },
   actions: {},
   modules: {}

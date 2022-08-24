@@ -72,8 +72,8 @@
   left 0
   bottom 0
   background #fff
-  top 32px
-  z-index 3
+  left: 40%;
+  top: calc(20% + 35px)
 .online
   background #60FF98
 .away
@@ -484,6 +484,9 @@
   margin-right: 35px;
   top: -7px;
   position: relative;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  overflow-y: hidden;
   .remote-window
     display inline-block
     transform scaleY(-1)
@@ -554,6 +557,7 @@
   border-radius 50%
   /* border: 2px solid hsla(0,0%,100%,.3); */
   position absolute
+  top 0
   width var(--height)
   height var(--height)
   /* left: calc(50% - 16px); */
@@ -816,6 +820,13 @@
         height 25px
         &:hover
           content url('../assets/mapIcon.svg')
+      .sponsorIcon
+        width 25px
+        height 25px
+        &:hover
+          content url('../assets/sponsorIcon.svg')
+        &.active
+          content url('../assets/sponsorIcon.svg')
       .speakIcon
         width 25px
         height 25px
@@ -1153,7 +1164,8 @@
   position absolute
   z-index 2
   width 30%
-  height 30%
+  left: 40%;
+  top: 20%;
   .drag
     display flex
     justify-content space-between
@@ -1752,6 +1764,7 @@
   overflow hidden
   width var(--height)
   height var(--height)
+  z-index -1
   img
     width 20%
 .remoteScreenLoading
@@ -1846,3 +1859,19 @@
   &:hover
     .followIcon
       opacity 1 !important
+.user-status
+  position: absolute;
+  height: 300px;
+  width: 250px;
+.light_wave
+  position: absolute;
+  z-index: 0;
+  top: -40px;
+  left: -36px;
+  img
+    width: 220px;
+    height: 220px;
+.light_wave2
+  top: -45px !important;
+  left: -40px !important;
+  zoom: 0.7;

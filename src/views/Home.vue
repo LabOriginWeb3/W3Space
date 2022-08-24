@@ -1,8 +1,10 @@
 <template>
   <div class="home">
     <div class="homeLogo">
-      <img src="../assets/home.png" @click="goW3Link()" />
-      <p class="version">V0.8.31</p>
+      <!-- <img src="../assets/home.png" @click="goW3Link()" /> -->
+      <lottie-player @click="goW3Link()" src="https://lottie.host/4b3a726f-5c96-48fb-9aa0-2e6c02c9ad0e/0Lp0LadiBq.json"  background="transparent"  speed="1"  style="width: 52px; height: 52px;"  autoplay></lottie-player>
+
+      <p class="version">V0.8.35</p>
     </div>
     <div
       class="apply"
@@ -34,6 +36,7 @@
           :key="i"
           v-show="vueConns[i - 1] != 0"
         >
+          <!-- <div class="light_wave"><img src="../assets/light_wave.png"></div> -->
           <div class="flex_align">
             <div
               class="video-outers"
@@ -151,11 +154,17 @@
           :class="{
             'remote-window': true,
             remoteWindow: true,
-            remoteWindowNone: item.hidden,
+            remoteWindowNone: getLiveUid(item.uid) || item.hidden,
           }"
           v-for="(item, index) in liveVideos"
           :key="index"
         >
+          <div
+            v-show="item.hasAudioTrack == true && item.speakingLevel > 15 && !showVideo"
+            :class="{ light_wave: true, light_wave2: miniScreen }"
+          >
+            <img src="../assets/light_wave.png" />
+          </div>
           <div
             :class="{
               'remote-window-active': activeVideo === 'l' + item.uid,
@@ -178,7 +187,9 @@
                   class="video-window"
                   :id="'liveVideo' + item.uid"
                   @click="openVideoWrapper('l' + item.uid)"
-                ></div>
+                >
+                <div v-if="showYvette" style="width: 100%; height: 100%; position: relative; overflow: hidden; background-color: black;"><video class="agora_video_player" playsinline="" autoplay loop height="100%" style="position: absolute; left: 12px; top: 0px; object-fit: cover;"><source src="https://alpha.w3work.org/Tour.mp4" type="video/mp4"/></video></div>
+                </div>
               </div>
               <div class="laber">
                 <p>{{ findUserName(item.uid) }}</p>
@@ -290,12 +301,12 @@
               <p @click="mouseUserOver">
                 {{ nearBylist[0] ? nearBylist[0].nickname : "" }}
               </p>
-              <div class="user-status">
-                <div
-                  class="tip-top"
-                  @mouseleave="mouseUserLeave"
-                  v-show="showUserInfo"
-                >
+              <div
+                v-show="showUserInfo"
+                class="user-status"
+                @mouseleave="mouseUserLeave"
+              >
+                <div class="tip-top">
                   <div class="user-info">
                     <div>
                       <img
@@ -482,17 +493,25 @@
     </div>
 
     <div class="menu" v-show="ifLodingComplete">
-      <div :class="{ active: menuIndex === 0 }" @click="showMenuIndex(0)">
+      <div
+        id="message"
+        :class="{ active: menuIndex === 0 }"
+        @click="showMenuIndex(0)"
+      >
         <span :class="{ message: getunreadMessage() }"></span>
         <img class="help" src="../assets/message.png" />
       </div>
-      <div :class="{ active: menuIndex === 1 }" @click="showMenuIndex(1)">
+      <div
+        id="friends"
+        :class="{ active: menuIndex === 1 }"
+        @click="showMenuIndex(1)"
+      >
         <img class="help" src="../assets/friends.png" />
       </div>
-      <!-- <div :class="{ active: showTask }" @click="changeTask()">
+      <div id="task" :class="{ active: showTask }" @click="changeTask()">
         <img class="help" src="../assets/task.png" />
-      </div> -->
-      <div @click="getOffice()">
+      </div>
+      <div id="offices" @click="getOffice()">
         <img src="../assets/companyIcon.svg" />
       </div>
       <div
@@ -506,19 +525,13 @@
       >
         <img class="help" src="../assets/customized.png" />
       </div>
-      <div
+      <div id="inviteIcon"
         v-show="inviteIcon && (mapId === 201 || mapId === 203)"
         @click="getInvite()"
       >
         <img class="help" src="../assets/invitationIcon.png" />
       </div>
-      <div
-        @click="
-          showHelp = !showHelp;
-          showMenu = false;
-          menuIndex = -1;
-        "
-      >
+      <div id="helpBtn" @click="$refs.newbee.clearHelp()">
         <img class="help" src="../assets/helpIcon.png" />
       </div>
     </div>
@@ -536,6 +549,8 @@
       :webRtc="webRtc"
       :vueTalkMsg="vueTalkMsg"
       :mapId="mapId"
+      :isAdmin="isAdmin"
+      :meetingName="meetingName"
       @setMenuIndex="setMenuIndex"
       @setSendObject="setSendObject"
       @setSendUser="setSendUser"
@@ -680,7 +695,7 @@
       </div>
     </div>
 
-    <div class="connectTip" v-show="isConnectTip" @click="isConnectTip = false">
+    <div class="connectTip" v-show="isConnectTip">
       <div class="connectTip-center">
         <img src="../assets/connect.svg" />
         <p>MANUALLY CONNECT A WALLET</p>
@@ -689,7 +704,7 @@
           your wallet. If you have any concerns, link a fresh wallet or one with
           no balance.
         </p>
-        <!-- <div @click="connect()">Connect a wallet</div> -->
+        <div @click="getLocalAccount">Guest Login</div>
       </div>
     </div>
 
@@ -1001,7 +1016,8 @@
 
     <div v-show="mapId == 202" class="amamode">
       AMA Mode: {{ amaMode == 0 ? "Broadcast Mode" : "Discussion Mode" }}
-      <img id="switchover"
+      <img
+        id="switchover"
         v-show="nearBylist[0] && nearBylist[0].sponsor == 1"
         src="../assets/change.png"
         @click="setAMAMode(amaMode == 0 ? 1 : 0)"
@@ -1109,17 +1125,25 @@
       "
       :webRtc="webRtc"
       :showTask="showTask"
+      :taskTotal="taskTotal"
     ></Task>
-    <NewBee :helpPos="helpPos" :sponsor="nearBylist.length > 0? nearBylist[0].sponsor: 0" 
-      @showUploadPosters='showUploadPosters = true' 
-      :webRtc='webRtc'
-      :ifLodingComplete='ifLodingComplete'
+    <NewBee
+      ref="newbee"
+      :helpPos="helpPos"
+      :sponsor="nearBylist.length > 0 ? nearBylist[0].sponsor : 0"
+      @showUploadPosters="showUploadPosters = true"
+      :webRtc="webRtc"
+      :ifLodingComplete="ifLodingComplete"
       @click.native="setGamefocus"
       @showPmSetting="showPmSetting = true"
       @hidePmSetting="showPmSetting = false"
       @setAMAMode="setAMAMode(1)"
-      @openBoard='openBoard = true'
-      ></NewBee>
+      @openBoard="openBoard = true"
+      @showYve="showYveguide"
+      @hideYve="hideYveguide"
+      @triggleAudio="triggleAudio"
+      @getInvite="getInvite"
+    ></NewBee>
     <Company
       v-if="showCompanyInfo"
       :companyInfo="companyInfo"
@@ -1155,7 +1179,7 @@ import Company from "../components/company.vue";
 import UploadPosters from "../components/UploadPosters.vue";
 import MenuDetail from "../components/MenuDetail.vue";
 import pmSetting from "../components/pmSetting.vue";
-
+import Web3 from 'web3'
 export default {
   name: "VideoChat",
   components: {
@@ -1290,6 +1314,11 @@ export default {
     amaMode: 0,
     helpPos: { mapid: 0, x: 0, y: 0 },
     buildLogoName: "",
+
+    leave: false,
+    taskTotal: 0,
+    miniScreen: false,
+    showYvette: false
   }),
   computed: {
     vueConns() {
@@ -1427,19 +1456,23 @@ export default {
       // console.log(this.teamList);
     };
     window["setMyself"] = async (list) => {
-      // console.log(list);
+      // console.log('myself', list);
+      this.taskTotal = list.score;
+      // console.log("taskTotal ", this.taskTotal);
       // console.log("this.followedIds ", list);
       this.followedIds = Array.from(new Set(list.follow.split("-")));
       setTimeout(() => {
         this.webRtc.sendToGdevelop("queryother", { ids: list.follow });
         this.webRtc.sendToGdevelop("getOffice", {});
       }, 2000);
+      this.isPm();
     };
     window["locationReload"] = async () => {
       location.reload();
     };
     window["setNearByList"] = async (list) => {
       this.nearBylist = list;
+      // console.log(this.nearBylist)
       this.getNearByUnreadNum();
       if (
         this.nearBylist[0].sponsorLive == 0 &&
@@ -1455,10 +1488,10 @@ export default {
       if (!this.joinedBoard) this.mountFastboard();
     };
     window["joinAsHost"] = async (id) => {
+      this.leave = false;
       console.log("joinAsHost");
       this.liveRoom = id;
       await this.joinAsHost();
-      // console.log("joinAsHost", 1);
       this.webRtc.sendToGdevelop("showSpeaking", { status: 1 });
       this.timer = setInterval(() => {
         this.getRoomUserList();
@@ -1466,9 +1499,9 @@ export default {
       }, 1500);
     };
     window["joinAsCall"] = async (id) => {
+      this.leave = false;
       this.liveRoom = id;
       await this.joinAsCall(id);
-      // console.log("joinAsCall", 1);
       this.webRtc.sendToGdevelop("showSpeaking", { status: 1 });
       this.timer = setInterval(() => {
         this.getRoomUserList();
@@ -1476,6 +1509,7 @@ export default {
       }, 1500);
     };
     window["joinAsAudience"] = async (id) => {
+      this.leave = false;
       console.log("joinAsAudience");
       this.liveRoom = id;
       await this.joinAsAudience();
@@ -1514,8 +1548,11 @@ export default {
         url = url.replace(/(\?|#)[^'"]*/, "");
         window.history.pushState({}, 0, url);
       }
-
-      this.isPm();
+      if(mapid == 201) {
+          this.inviteLink = this.locationUrl + "/?office=" + this.account;
+        } else {
+          this.inviteLink = this.locationUrl + "/?toffice=" + this.account;
+      }
     };
     window["setPeerStatus"] = async (arr) => {
       this.webRtc.checkPeerStatus(arr);
@@ -1529,7 +1566,7 @@ export default {
     });
 
     window["setOfficeList"] = async (list) => {
-      console.log("list", list);
+      // console.log("list", list);
       let ofList = list.Ary;
       for (let i = 0; i < ofList.length; i++) {
         ofList[i].type = 1;
@@ -1543,7 +1580,7 @@ export default {
       }
       this.officeList = this.officeList.concat(ofList);
       this.opOfficeList();
-      console.log(this.officeList);
+      // console.log(this.officeList);
     };
 
     window["openOffice"] = async () => {
@@ -1616,7 +1653,7 @@ export default {
         this.companyInfo.setAble = true;
       }
       // this.companyInfo = {...this.companyInfo,...info}
-      console.log("this.companyInfo", this.companyInfo);
+      // console.log("this.companyInfo", this.companyInfo);
       this.showCompanyInfo = true;
     };
     window["openPlate"] = async (info) => {
@@ -1652,11 +1689,53 @@ export default {
       document.querySelector(".home").style.setProperty("--topM", "240px");
       document.querySelector(".home").style.setProperty("--tipTop", "190px");
       document.querySelector(".home").style.setProperty("--tipLeft", "48px");
+    } else {
+      this.miniScreen = true;
     }
     this.miniMapW = $(".miniMap").width();
     this.miniMapH = $(".miniMap").height();
   },
   methods: {
+    triggleAudio() {
+      if(this.liveHouse) {
+        if(this.openLiveAudio == true) {
+          this.setLiveAudioClose()
+        } else {
+          this.setLiveAudioOpen()
+        }
+      } else {
+        let status = this.openAudio === false ? true : false;
+        this.triggerTrack(0, status);
+      }
+    },
+    async getLocalAccount() {
+        localStorage.setItem("userAddress", '');
+        const web3 = new Web3();
+        let a = web3.eth.accounts.create("w3work");
+        this.account = a.address;
+        if(!this.webRtc) {
+          await this.initWebRTC()
+        }
+        this.showChangeRole = true;
+    },
+    showYveguide() {
+      if(this.showYvette) return
+      let user = {
+        hasAudioTrack: true,
+        hasVideoTrack: true,
+        image: 1,
+        loadingStatus: false,
+        speakingLevel: 20,
+        status: 1,
+        uid: 'Yvette',
+      };
+      this.liveVideos.push(user);
+      this.showYvette = true
+    },
+    hideYveguide() {
+      this.liveVideos.splice(0,1);
+      this.showYvette = false
+    },
     changeTask() {
       this.showMenu = false;
       this.showTask = true;
@@ -1682,7 +1761,7 @@ export default {
       }
     },
     getCreateroom(type, name) {
-      console.log(type, name, this.buildLogoName);
+      // console.log(type, name, this.buildLogoName);
       if (name !== "") {
         if (this.officeList.length !== 0) {
           let isCreate = false;
@@ -1793,6 +1872,7 @@ export default {
       }
     },
     getShowControls(uid) {
+      if(uid == 'Yvette') return true
       if (uid) {
         let id = uid.toString().slice(0, 5);
         if (parseInt(id) < 90000) {
@@ -1814,42 +1894,44 @@ export default {
         } else {
           this.roomUsers = res.data.data.users;
         }
-        if (this.roomUsers) {
-          // console.log("liveVideos", this.liveVideos);
-          // console.log("roomUsers", this.roomUsers);
-          for (var i = 0; i < this.liveVideos.length; i++) {
-            var arrindex = this.roomUsers.findIndex((item) => {
-              return item === this.liveVideos[i].uid;
+        if (this.roomUsers && !this.leave) {
+          for (var i = 0; i < this.roomUsers.length; i++) {
+            var arrindex = this.liveVideos.findIndex((item) => {
+              return item.uid === this.roomUsers[i];
             });
             if (arrindex == -1) {
-              this.liveVideos[i].hidden = true;
+              let uid = (this.roomUsers[i] % 10000) + 1010000000;
+              let userList = this.membersList.concat(this.nearBylist);
+              let status, image;
+              for (let k = 0; k < userList.length; k++) {
+                if (userList[k].id == uid) {
+                  status = userList[k].status;
+                  image = userList[k].image;
+                }
+              }
+
+              let user = {
+                hasAudioTrack: false,
+                image: image,
+                loadingStatus: undefined,
+                speakingLevel: 0,
+                status: status,
+                uid: this.roomUsers[i],
+              };
+              this.liveVideos.push(user);
             } else {
-              this.liveVideos[i].hidden = false;
+              for (var j = 0; j < this.liveVideos.length; j++) {
+                var arrindex1 = this.roomUsers.findIndex((item) => {
+                  return item === this.liveVideos[j].uid;
+                });
+                if (arrindex1 == -1) {
+                  this.liveVideos[j].hidden = true;
+                } else {
+                  this.liveVideos[j].hidden = false;
+                }
+              }
             }
           }
-
-          // for (var i = 0; i < this.roomUsers.length; i++) {
-          //   var arrindex = this.liveVideos.findIndex((item) => {
-          //     return item.uid === this.roomUsers[i];
-          //   });
-          //   if (arrindex == -1) {
-
-          //     this.liveVideos[i].hidden = true;
-
-          //     let user = {
-          //       hasAudioTrack: true,
-          //       hidden: false,
-          //       image: 1,
-          //       loadingStatus: undefined,
-          //       speakingLevel: 0,
-          //       status: 0,
-          //       uid: this.roomUsers[i],
-          //     };
-          //     this.liveVideos.push(user);
-          //   } else {
-          //     this.liveVideos[i].hidden = false;
-          //   }
-          // }
         }
       }
     },
@@ -2064,8 +2146,6 @@ export default {
       copyContent.select();
       document.execCommand("Copy");
     },
-    // sendToGdevelop("pm", {cmd: "setSponsor", address: "xxxxxxxxx", param: {set: 0/1}})；
-    // sendToGdevelop("pm", {cmd: "setPrivateSpace", address: "xxxxxxxxx"})；
     findUserName(e) {
       // let a = e > 2e9 ? e - 1e9 : e;
       let a = (e % 10000) + 1010000000;
@@ -2074,6 +2154,14 @@ export default {
         if (userList[i].id == a) return userList[i].nickname;
       }
       return e;
+    },
+    getLiveUid(e) {
+      // let a = e > 2e9 ? e - 1e9 : e;
+      let a = (e % 10000) + 1010000000;
+      if (a === this.nearBylist[0].id) {
+        return true;
+      }
+      return false;
     },
     setLiveAudioOpen() {
       this.liveRtc.openAudio();
@@ -2109,7 +2197,7 @@ export default {
           (parseInt(Math.random() * 10000) + 90000) * 10000 +
           (this.nearBylist[0].id % 10000);
         // let aa = this.nearBylist[0].id + 1e9 || null;
-        console.log("uid", aa);
+        // console.log("uid", aa);
         let token = await axios.post(
           this.locationUrl + "/api/fetch_rtc_token",
           {
@@ -2132,6 +2220,10 @@ export default {
     },
     leaveLive() {
       console.log("leave");
+      clearInterval(this.timer);
+      this.timer = null;
+      this.leave = true;
+      this.roomUsers = [];
       if (this.liveRtc) {
         if (this.mapId == 103 || this.mapId === 202) {
           this.liveRtc.leave(this.liveChannel + this.mapId);
@@ -2145,9 +2237,6 @@ export default {
       this.webRtc.sendToGdevelop("showSpeaking", { status: 4 });
       this.liveHouse = false;
       this.$store.commit("setOpenLiveScreen", false);
-      clearInterval(this.timer);
-      this.timer = null;
-      this.roomUsers = [];
     },
     async joinAsAudience() {
       if (!this.liveRtc) this.liveRtc = new LiveRTC();
@@ -2159,7 +2248,7 @@ export default {
         channelName: this.liveChannel + this.liveRoom,
         role: 2,
       });
-      console.log(token);
+      // console.log(token);
       this.liveRtc.joinAsAudience(
         this.liveChannel + this.liveRoom,
         token.data.token,
@@ -2487,17 +2576,15 @@ export default {
     async initWebRTC() {
       // const that = this
       this.webRtc = new MyWebRTC();
-      let re = await this.webRtc.init(this.$refs.games.contentWindow.xl);
-      if (!re) {
-        console.log("111111111111111111111111111111");
-      }
+      await this.webRtc.init(this.$refs.games.contentWindow.xl);
+
       this.openAudio = this.webRtc.openAudio;
       this.openVideo = this.webRtc.openVideo;
       // console.log(this.openAudio ? 1 : 4);
-      this.webRtc.sendToGdevelop("showSpeaking", {
-        status: this.openAudio ? 1 : 4,
-      });
-      console.log("", this.openAudio, this.openVideo);
+      // this.webRtc.sendToGdevelop("showSpeaking", {
+      //   status: this.openAudio ? 1 : 4,
+      // });
+      // console.log("", this.openAudio, this.openVideo);
       this.isInitWebRTC = true;
       if (this.account) {
         if (localStorage.getItem("userAddress") != this.account) {
@@ -2537,7 +2624,6 @@ export default {
                 JSON.parse(this.changeRole) === false ||
                 localStorage.getItem("userAddress") != this.account
               ) {
-                console.log(3333333333333);
                 this.showChangeRole = true;
               } else {
                 this.webRtc.sendToGdevelop("setAccount", {
@@ -2564,9 +2650,9 @@ export default {
             location.reload();
           }
         });
-      } else {
-        this.alert = "Failed to detect any ETH wallet.";
-        this.topTips({ alert: this.alert, time: 3000 });
+      }
+       else {
+        this.isConnectTip = true
       }
     },
     mouseUserOver() {
@@ -2578,6 +2664,9 @@ export default {
     },
   },
   watch: {
+    account() {
+      if(this.account) this.isConnectTip = false
+    },
     openVideo() {
       if (this.openVideo == true) {
         $(".selfVideoLoading").css("opacity", "1").css("z-index", "2");
@@ -2624,17 +2713,41 @@ export default {
       }
     },
     async liveVideos() {
-      // console.log("liveVideos1111", this.liveVideos);
-      // console.log("roomUsers1111", this.roomUsers);
-      if (this.liveVideos.length > 0 && this.roomUsers) {
-        for (var i = 0; i < this.liveVideos.length; i++) {
-          var arrindex = this.roomUsers.findIndex((item) => {
-            return item === this.liveVideos[i].uid;
+      if ((this.liveVideos.length > 0 || this.roomUsers) && !this.leave) {
+        for (var i = 0; i < this.roomUsers.length; i++) {
+          var arrindex = this.liveVideos.findIndex((item) => {
+            return item.uid === this.roomUsers[i];
           });
           if (arrindex == -1) {
-            this.liveVideos[i].hidden = true;
+            let uid = (this.roomUsers[i] % 10000) + 1010000000;
+            let userList = this.membersList.concat(this.nearBylist);
+            let status, image;
+            for (let k = 0; k < userList.length; k++) {
+              if (userList[k].id == uid) {
+                status = userList[k].status;
+                image = userList[k].image;
+              }
+            }
+            let user = {
+              hasAudioTrack: false,
+              image: image,
+              loadingStatus: undefined,
+              speakingLevel: 0,
+              status: status,
+              uid: this.roomUsers[i],
+            };
+            this.liveVideos.push(user);
           } else {
-            this.liveVideos[i].hidden = false;
+            for (var j = 0; j < this.liveVideos.length; j++) {
+              var arrindex1 = this.roomUsers.findIndex((item) => {
+                return item === this.liveVideos[j].uid;
+              });
+              if (arrindex1 == -1) {
+                this.liveVideos[j].hidden = true;
+              } else {
+                this.liveVideos[j].hidden = false;
+              }
+            }
           }
         }
 
@@ -2666,7 +2779,7 @@ export default {
 
     vueConns: function () {
       this.listNum = this.vueConns.length;
-      console.log("vueConns", this.vueConns);
+      // console.log("vueConns", this.vueConns);
       if (this.listNum > 0) {
         if (window.devicePixelRatio <= 1) {
           document

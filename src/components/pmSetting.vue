@@ -174,7 +174,14 @@ export default {
       logoFile: "",
     };
   },
-  props: ["showPmInput", "locationUrl", "webRtc", "mapId", "nearBylist","meetingName"],
+  props: [
+    "showPmInput",
+    "locationUrl",
+    "webRtc",
+    "mapId",
+    "nearBylist",
+    "meetingName",
+  ],
   computed: {},
   created() {},
   methods: {
@@ -246,6 +253,13 @@ export default {
       return time;
     },
     pmOpenMeeting(roomName, startTime, endTime) {
+      if (startTime > endTime) {
+        this.$emit("topTips", {
+          alert: "Start time cannot exceed end time.",
+          time: 3000,
+        });
+        return;
+      }
       if (roomName && startTime && endTime) {
         this.webRtc.sendToGdevelop("pm", {
           cmd: "createmeeting",
@@ -257,7 +271,7 @@ export default {
             whiteboard: "c8616ce00f0311eda1dd17b7c8465f8a",
           },
         });
-        
+
         this.invitationLink = this.locationUrl + "?meeting=" + this.roomName;
         setTimeout(() => {
           this.roomName = "";

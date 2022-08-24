@@ -216,12 +216,12 @@
                     @click="follow(item)"
                   />
                 </div>
-                <img
+                <!-- <img
                   v-show="item.status !== 3 && item.id != nearBylist[0].id"
                   class="mapIcon"
                   src="../assets/mapIcon2.svg"
                   @click.stop="flyTo(item.id)"
-                />
+                /> -->
               </div>
             </div>
           </div>
@@ -261,6 +261,15 @@
                 >
               </div>
               <div>
+                <img
+                  v-show="mapId === 202 && (isAdmin || item.sponsor == 1)"
+                  :class="{
+                    sponsorIcon: true,
+                    active: item.sponsor == 1,
+                  }"
+                  src="../assets/sponsorIcon2.svg"
+                  @click="setSponsorIcon(item.id, item.sponsor)"
+                />
                 <img
                   v-show="
                     (nearBylist[0].sponsor == 1 ||
@@ -354,6 +363,15 @@
                 >
               </div>
               <div>
+                <img
+                  v-show="mapId === 202 && (isAdmin || item.sponsor == 1)"
+                  :class="{
+                    sponsorIcon: true,
+                    active: item.sponsor == 1,
+                  }"
+                  src="../assets/sponsorIcon2.svg"
+                  @click="setSponsorIcon(item.id, item.sponsor)"
+                />
                 <img
                   v-show="
                     (nearBylist[0].sponsor == 1 ||
@@ -467,7 +485,12 @@
         </div>
       </div>
       <div v-show="menuIndex === 0">
-        <div :class="{'send-message':true,'nearby-msg':sendObject == 'Nearby'}">
+        <div
+          :class="{
+            'send-message': true,
+            'nearby-msg': sendObject == 'Nearby',
+          }"
+        >
           <twemoji-textarea
             ref="emojiTextarea"
             id="emojiTextarea"
@@ -613,6 +636,8 @@ export default {
     "webRtc",
     "vueTalkMsg",
     "mapId",
+    "isAdmin",
+    "meetingName",
   ],
 
   computed: {
@@ -637,6 +662,12 @@ export default {
     },
   },
   methods: {
+    setSponsorIcon(id, isSponsor) {
+      this.webRtc.sendToGdevelop("setSponsor", {
+          userID: id,
+          set: isSponsor == 1 ? 0:1
+        });
+    },
     closeMenu() {
       this.$emit("closeMenu", false);
     },
@@ -787,6 +818,7 @@ export default {
         msg: message,
         time: new Date(),
       };
+      console.log(obj)
       this.webRtc.sendToGdevelop("talk", obj);
       this.$store.commit("addTalkMsg", obj);
       this.message = "";
@@ -935,7 +967,7 @@ export default {
 <style lang="stylus" scoped>
 @import '../views/home.styl'
 /deep/ #emoji-container > #emoji-popup
-  width:290px !important;
+  width 290px !important
 /deep/ #emoji-container > #emoji-popup .emoji-popover-inner
-  width:290px !important;
+  width 290px !important
 </style>

@@ -6,7 +6,11 @@
         <div class="close" @click="closeTask">X</div>
       </div>
       <div class="tasks">
-        <div class="title"><p>TASK</p></div>
+        <div class="title"><p>TASKS</p></div>
+        <div class="total">
+          <img src="../assets/task/Coin.png" />x
+          {{ total === 0 ? taskTotal : total }}
+        </div>
         <div class="list">
           <div class="item">
             <div class="icon">
@@ -33,7 +37,10 @@
               <div><img src="../assets/task/2-communicate@2x.png" /></div>
             </div>
             <div class="info">
-              <p class="name">COMMUNICATE</p>
+              <p class="name">
+                COMMUNICATE
+                <span>({{ getNum(scoreinfo.video) }}/10)</span>
+              </p>
               <!-- <div><div class="progress" style="width: 60%"></div></div> -->
               <p>Bonus points +1</p>
             </div>
@@ -41,11 +48,11 @@
             <div
               :class="{
                 button: true,
-                incompleted: scoreinfo.video != 1,
-                completed: scoreinfo.video === 1,
+                incompleted: scoreinfo.video === '',
+                completed: scoreinfo.video !== '',
               }"
             >
-              {{ scoreinfo.video != 1 ? "INCOMPLETE" : "COMPLETED" }}
+              {{ scoreinfo.video !== "" ? "COMPLETED" : "INCOMPLETE" }}
             </div>
           </div>
           <div class="item">
@@ -108,54 +115,10 @@
               {{ scoreinfo.blackboard != 1 ? "INCOMPLETE" : "COMPLETED" }}
             </div>
           </div>
-          <div class="item">
-            <div class="icon">
-              <div>
-                <img src="../assets/task/6-weeklyscreentime15h@2x.png" />
-              </div>
-            </div>
-            <div class="info">
-              <p class="name">WEEKLY SCREEN TIME 15H</p>
-              <!-- <div><div class="progress"></div></div> -->
-              <p>Bonus points +30</p>
-            </div>
-            <img class="tasksplit" src="../assets/tasksplit.png" />
-            <div
-              :class="{
-                button: true,
-                incompleted: weekonline.hours15 != 1,
-                completed: weekonline.hours15 === 1,
-              }"
-            >
-              {{ weekonline.hours15 != 1 ? "INCOMPLETE" : "COMPLETED" }}
-            </div>
-          </div>
-          <div class="item">
-            <div class="icon">
-              <div>
-                <img src="../assets/task/7-weeklyscreentime30h@2x.png" />
-              </div>
-            </div>
-            <div class="info">
-              <p class="name">WEEKLY SCREEN TIME 30H</p>
-              <!-- <div><div class="progress"></div></div> -->
-              <p>Bonus points +80</p>
-            </div>
-            <img class="tasksplit" src="../assets/tasksplit.png" />
-            <div
-              :class="{
-                button: true,
-                incompleted: weekonline.hours30 != 1,
-                completed: weekonline.hours30 === 1,
-              }"
-            >
-              {{ weekonline.hours30 != 1 ? "INCOMPLETE" : "COMPLETED" }}
-            </div>
-          </div>
+
           <div class="item">
             <div class="icon">
               <div><img src="../assets/task/8-attendama@2x.png" /></div>
-              1
             </div>
             <div class="info">
               <p class="name">ATTEND AMA</p>
@@ -163,7 +126,15 @@
               <p>Bonus points +6</p>
             </div>
             <img class="tasksplit" src="../assets/tasksplit.png" />
-            <div class="button completed">COMPLETED</div>
+            <div
+              :class="{
+                button: true,
+                incompleted: scoreinfo.meetingenter === '',
+                completed: scoreinfo.meetingenter !== '',
+              }"
+            >
+              {{ scoreinfo.meetingenter === "" ? "INCOMPLETE" : "COMPLETED" }}
+            </div>
           </div>
           <div class="item">
             <div class="icon">
@@ -175,7 +146,15 @@
               <p>Bonus points +60</p>
             </div>
             <img class="tasksplit" src="../assets/tasksplit.png" />
-            <div class="button completed">COMPLETED</div>
+            <div
+              :class="{
+                button: true,
+                incompleted: scoreinfo.hostama === 0,
+                completed: scoreinfo.hostama !== 0,
+              }"
+            >
+              {{ scoreinfo.hostama !== 0 ? "COMPLETED" : "INCOMPLETE" }}
+            </div>
           </div>
           <div class="item">
             <div class="icon">
@@ -187,14 +166,22 @@
               <p>Bonus points +35</p>
             </div>
             <img class="tasksplit" src="../assets/tasksplit.png" />
-            <div class="button completed">COMPLETED</div>
+            <div
+              :class="{
+                button: true,
+                incompleted: weekama.award != 1,
+                completed: weekama.award === 1,
+              }"
+            >
+              {{ weekama.award != 1 ? "INCOMPLETE" : "COMPLETED" }}
+            </div>
           </div>
           <div class="item">
             <div class="icon">
               <div><img src="../assets/task/11-inviteateam@2x.png" /></div>
             </div>
             <div class="info">
-              <p class="name">INVITE A TEAM</p>
+              <p class="name">BUILD MY OFFICE</p>
               <!-- <div><div class="progress"></div></div> -->
               <p>Bonus points +40</p>
             </div>
@@ -202,11 +189,11 @@
             <div
               :class="{
                 button: true,
-                incompleted: scoreinfo.inviteteam != 1,
-                completed: scoreinfo.inviteteam === 1,
+                incompleted: scoreinfo.createoffice != 1,
+                completed: scoreinfo.createoffice === 1,
               }"
             >
-              {{ scoreinfo.inviteteam != 1 ? "INCOMPLETE" : "COMPLETED" }}
+              {{ scoreinfo.createoffice != 1 ? "INCOMPLETE" : "COMPLETED" }}
             </div>
           </div>
           <div class="item">
@@ -214,7 +201,10 @@
               <div><img src="../assets/task/12-inviteacolleague@2x.png" /></div>
             </div>
             <div class="info">
-              <p class="name">INVITE A COLLEAGUE</p>
+              <p class="name">
+                INVITE A COLLEAGUE
+                <span>({{ getNum(scoreinfo.invitemember) }}/10)</span>
+              </p>
               <!-- <div><div class="progress"></div></div> -->
               <p>Bonus points +5</p>
             </div>
@@ -222,11 +212,11 @@
             <div
               :class="{
                 button: true,
-                incompleted: scoreinfo.invitemember != 1,
-                completed: scoreinfo.invitemember === 1,
+                incompleted: scoreinfo.invitemember === '',
+                completed: scoreinfo.invitemember !== '',
               }"
             >
-              {{ scoreinfo.invitemember != 1 ? "INCOMPLETE" : "COMPLETED" }}
+              {{ scoreinfo.invitemember !== "" ? "COMPLETED" : "INCOMPLETE" }}
             </div>
           </div>
         </div>
@@ -243,19 +233,25 @@ export default {
     return {
       scoreinfo: [],
       online: {},
-      weekonline: {},
+      weekama: {},
+      total: 0,
     };
   },
-  props: ["webRtc", "showTask"],
+  props: ["webRtc", "showTask", "taskTotal"],
   computed: {},
+  mounted() {},
   created() {
     window["scoreinfo"] = async (info) => {
       if (this.showTask) {
         console.log("scoreinfo", info);
         this.scoreinfo = info;
         this.online = JSON.parse(info.online);
-        this.weekonline = JSON.parse(info.weekonline);
+        this.weekama = JSON.parse(info.weekama);
       }
+    };
+    window["awardscore"] = async (info) => {
+      // console.log("awardscore", info);
+      this.total = info.totalscore;
     };
   },
   methods: {
@@ -270,10 +266,29 @@ export default {
         e.cancelBubble = true;
       }
     },
+    getNum(info) {
+      if (info) {
+        let comm = Array.from(info.split("-"));
+        // console.log(comm);
+        return comm.length >= 10 ? 10 : comm.length;
+      }
+      return 0;
+    },
   },
 };
 </script>
 <style lang="stylus" scoped>
+::-webkit-scrollbar
+  width 4px
+  height 8px
+::-webkit-scrollbar-track
+  background #ffffff00
+::-webkit-scrollbar-thumb
+  background linear-gradient(
+    132deg,
+    rgba(92, 234, 142, 0.3) 0%,
+    rgba(92, 234, 142, 0.3) 100%
+  )
 .main
   width 100vw
   height 100vh
@@ -332,9 +347,18 @@ export default {
       align-items center
       color #000
       font-size 18px
-      margin-bottom 30px
+      margin-bottom 10px
       p
         padding-top 10px
+    .total
+      width 100%
+      margin-bottom 10px
+      display flex
+      justify-content center
+      align-items center
+      color #60ff98
+      img
+        margin-right 5px
     .list
       height 375px
       overflow-y auto
@@ -373,9 +397,9 @@ export default {
     .info
       margin-left 10px
       text-align left
-      width 180px
+      width 200px
       div
-        width 180px
+        width 200px
         height 10px
         background #000000
         border 1px solid rgba(86, 171, 123, 1)
@@ -394,10 +418,13 @@ export default {
       .name
         color #fff
         font-size 14px
+        span
+          margin-left 5px
+          color #60ff98
     .tasksplit
       width 1px
       height 54px
-      margin-left 60px
+      margin-left 40px
     .button
       width 88px
       height 44px
@@ -407,7 +434,6 @@ export default {
       align-items center
       margin-left 23px
       font-size 12px
-      cursor pointer
       &.completed
         background #60FF98
       &.incompleted
