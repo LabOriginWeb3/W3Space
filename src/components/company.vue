@@ -407,7 +407,7 @@ page: 1}).then(res=> {
 .officeBg
   width 100vw
   height 100vh
-  background #141627b8
+  background #1e1e1ec2
   position absolute
   z-index 999
   display flex

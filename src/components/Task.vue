@@ -243,7 +243,7 @@ export default {
   created() {
     window["scoreinfo"] = async (info) => {
       if (this.showTask) {
-        console.log("scoreinfo", info);
+        // console.log("scoreinfo", info);
         this.scoreinfo = info;
         this.online = JSON.parse(info.online);
         this.weekama = JSON.parse(info.weekama);
@@ -286,8 +286,8 @@ export default {
 ::-webkit-scrollbar-thumb
   background linear-gradient(
     132deg,
-    rgba(92, 234, 142, 0.3) 0%,
-    rgba(92, 234, 142, 0.3) 100%
+    #D9D9D9 0%,
+    #D9D9D9 100%
   )
 .main
   width 100vw
@@ -300,12 +300,16 @@ export default {
   align-items center
   top 0
 .task
-  width 640px
+  width 600px
   height 557px
   background #090f0bb3
   border 2px solid rgba(90, 206, 106, 0.3)
   border-radius 6px
   padding 5px
+  border-radius: 10px;
+  border: 8px solid #383838;
+  box-shadow: 8px 8px 3px -3px #000;
+  background: #F3F3F3;
   .bgtop
     display flex
     justify-content space-between
@@ -317,28 +321,29 @@ export default {
       justify-content center
       align-items center
       color #fff
-      font-size 10px
       width 20px
       height 20px
-      background #ffffff1a
-      box-shadow 0px 0px 13px 0px rgb(0 0 0 / 50%)
-      border-radius 11.67px
       cursor pointer
-      margin-right 5px
-      margin-top 5px
+      margin-top: -6px;
+      margin-right: -12px;
+      background: #383838;
+      border-radius: 0px 10px;
+      height: 37px;
+      width: 37px;
+      font-size: 22px;
   .bgbottom
     text-align right
     img
       width 50px
       height 41px
   .tasks
-    height 480px
+    height 512px
     display flex
     justify-content center
     justify-content center
     flex-wrap wrap
+    margin-top: -30px;
     .title
-      background url('../assets/taskbg.png')
       width 214px
       height 50px
       background-size 100% 100%
@@ -349,37 +354,41 @@ export default {
       font-size 18px
       margin-bottom 10px
       p
-        padding-top 10px
+        padding-top: 10px;
+        font-weight: 700;
+        font-size: 25px;
+        line-height: 34px;
     .total
       width 100%
       margin-bottom 10px
       display flex
       justify-content center
       align-items center
-      color #60ff98
+      color: #1DCE5C;
       img
         margin-right 5px
     .list
-      height 375px
+      height 400px
       overflow-y auto
-      width 480px
+      width 550px
       display flex
       justify-content center
       /* align-items: center; */
       flex-wrap wrap
     .item
-      width 460px
-      height 80px
-      background #193929
-      border 1px solid rgba(92, 234, 142, 0.3)
-      margin-bottom 12px
-      display flex
-      align-items center
-      padding 0 25px
+      width: 460px;
+      height: 80px;
+      background: #193929;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      background: #FFFFFF;
+      border-radius: 10px;
     .icon
       width 60px
       height 60px
-      background-image linear-gradient(#06f839, #10f0ff, #8c73ff)
+      // background-image linear-gradient(#06f839, #10f0ff, #8c73ff)
       border-radius 50px
       display flex
       justify-content center
@@ -387,7 +396,7 @@ export default {
       div
         width 58px
         height 58px
-        background #56AB7B
+        background #70EF8D
         border-radius 50px
         display flex
         justify-content center
@@ -397,7 +406,7 @@ export default {
     .info
       margin-left 10px
       text-align left
-      width 200px
+      width 250px
       div
         width 200px
         height 10px
@@ -414,29 +423,34 @@ export default {
           border-radius 5px
       p
         font-size 12px
-        color #60FF98
+        color: #0DAF46;
       .name
-        color #fff
-        font-size 14px
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 25px;
+        color: #000000;
         span
           margin-left 5px
-          color #60ff98
+          color: #0daf46;
     .tasksplit
       width 1px
       height 54px
       margin-left 40px
     .button
-      width 88px
+      width: 120px;
       height 44px
       border-radius 22px
       display flex
       justify-content center
       align-items center
       margin-left 23px
-      font-size 12px
+      border-radius: 6px;
+      font-size: 14px;
+      color: #000;
+      font-family: "Silkscreen";
       &.completed
-        background #60FF98
+        background #70EF8D
       &.incompleted
-        background #ffffff4f
+        background #D8D8D8
         color #fff
 </style>

@@ -2,9 +2,16 @@
   <div class="home">
     <div class="homeLogo">
       <!-- <img src="../assets/home.png" @click="goW3Link()" /> -->
-      <lottie-player @click="goW3Link()" src="https://lottie.host/4b3a726f-5c96-48fb-9aa0-2e6c02c9ad0e/0Lp0LadiBq.json"  background="transparent"  speed="1"  style="width: 52px; height: 52px;"  autoplay></lottie-player>
+      <lottie-player
+        @click="goW3Link()"
+        src="https://lottie.host/4b3a726f-5c96-48fb-9aa0-2e6c02c9ad0e/0Lp0LadiBq.json"
+        background="transparent"
+        speed="1"
+        style="width: 52px; height: 52px"
+        autoplay
+      ></lottie-player>
 
-      <p class="version">V0.8.35</p>
+      <p class="version">V0.8.37</p>
     </div>
     <div
       class="apply"
@@ -67,7 +74,7 @@
                   }"
                   @click="openVideoWrapper('v' + i)"
                 >
-                  <img :src="getRoleImg(vueConns[i - 1].image)" />
+                  <img :src="getNearByImg(vueConns[i - 1].targetID)" />
                   <span
                     :class="{
                       status: true,
@@ -160,7 +167,11 @@
           :key="index"
         >
           <div
-            v-show="item.hasAudioTrack == true && item.speakingLevel > 15 && !showVideo"
+            v-show="
+              item.hasAudioTrack == true &&
+              item.speakingLevel > 15 &&
+              !showVideo
+            "
             :class="{ light_wave: true, light_wave2: miniScreen }"
           >
             <img src="../assets/light_wave.png" />
@@ -188,7 +199,35 @@
                   :id="'liveVideo' + item.uid"
                   @click="openVideoWrapper('l' + item.uid)"
                 >
-                <div v-if="showYvette" style="width: 100%; height: 100%; position: relative; overflow: hidden; background-color: black;"><video class="agora_video_player" playsinline="" autoplay loop height="100%" style="position: absolute; left: 12px; top: 0px; object-fit: cover;"><source src="https://alpha.w3work.org/Tour.mp4" type="video/mp4"/></video></div>
+                  <div
+                    v-if="showYvette"
+                    style="
+                      width: 100%;
+                      height: 100%;
+                      position: relative;
+                      overflow: hidden;
+                      background-color: black;
+                    "
+                  >
+                    <video
+                      class="agora_video_player"
+                      playsinline=""
+                      autoplay
+                      loop
+                      height="100%"
+                      style="
+                        position: absolute;
+                        left: 12px;
+                        top: 0px;
+                        object-fit: cover;
+                      "
+                    >
+                      <source
+                        src="https://alpha.w3work.org/Tour.mp4"
+                        type="video/mp4"
+                      />
+                    </video>
+                  </div>
                 </div>
               </div>
               <div class="laber">
@@ -199,10 +238,11 @@
                 :class="{
                   'my-avatar': true,
                   test: getHeadImg(item, (item.uid % 10000) + 1010000000),
+                  'my-avatar-screen': !getShowControls(item.uid),
                 }"
                 @click="openVideoWrapper('l' + item.uid)"
               >
-                <img :src="getRoleImg(item.image)" />
+                <img :src="getNearByImg((item.uid % 10000) + 1010000000)" />
                 <span
                   :class="{
                     status: true,
@@ -311,7 +351,7 @@
                     <div>
                       <img
                         v-if="nearBylist[0]"
-                        :src="getRoleImg(nearBylist[0].image)"
+                        :src="getRoleImg(nearBylist[0])"
                       />
                       <span
                         :class="{
@@ -376,10 +416,7 @@
               class="my-avatar"
               @click="openVideoWrapper('self')"
             >
-              <img
-                v-if="nearBylist[0]"
-                :src="getRoleImg(nearBylist[0].image)"
-              />
+              <img v-if="nearBylist[0]" :src="getRoleImg(nearBylist[0])" />
               <span
                 :class="{
                   status: true,
@@ -525,7 +562,8 @@
       >
         <img class="help" src="../assets/customized.png" />
       </div>
-      <div id="inviteIcon"
+      <div
+        id="inviteIcon"
         v-show="inviteIcon && (mapId === 201 || mapId === 203)"
         @click="getInvite()"
       >
@@ -551,12 +589,15 @@
       :mapId="mapId"
       :isAdmin="isAdmin"
       :meetingName="meetingName"
+      :currentMapId="currentMapId"
+      :vueTeamMsg="vueTeamMsg"
       @setMenuIndex="setMenuIndex"
       @setSendObject="setSendObject"
       @setSendUser="setSendUser"
       @setFollow="setFollow"
       @closeMenu="closeMenu"
       @topTips="topTips"
+      @getTeamListUnread="getTeamListUnread"
     ></MenuDetail>
 
     <iframe
@@ -569,18 +610,21 @@
     <div v-show="openBoard">
       <div v-drag class="boardWrapper">
         <div class="drag">
-          <div>Click here drag</div>
-          <p
-            @click="
-              openBoard = false;
-              setGamefocus();
-            "
-          >
-            ×
-          </p>
+          <div><img src="../assets/drag.png" />Click here drag</div>
         </div>
       </div>
-      <div id="board"></div>
+
+      <div id="board">
+        <p
+          class="board-close"
+          @click="
+            openBoard = false;
+            setGamefocus();
+          "
+        >
+          ×
+        </p>
+      </div>
     </div>
 
     <div class="noteWrapper" v-if="openBlocks">
@@ -622,16 +666,90 @@
     <!-- v-if="showChangeRole" -->
     <div class="changeRole" v-if="showChangeRole" @click="settingBack()">
       <div class="roleCon" @click="cancelBubble($event)">
+        <p class="close_frame" @click="settingBack()">X</p>
         <div class="role">
           <p>Choose Your Character</p>
           <div class="avater">
             <div
               v-for="(item, index) in roleList"
               :key="index"
-              :class="{ active: role === item.role }"
-              @click="role = item.role"
+              :class="{ active: role.id === item.role }"
+              @click="setRole('', item.role)"
             >
               <img :src="item.img" />
+            </div>
+          </div>
+          <p>Try NFT</p>
+          <div class="NFT">
+            <div
+              v-for="i in 50"
+              :key="i"
+              :class="{ active: role.id === 'BAYC' + i }"
+              @click="setRole('BAYC', i)"
+            >
+              <img
+                :src="
+                  'https://bayc2.oss-cn-shenzhen.aliyuncs.com/pfp/BAYC' +
+                  i +
+                  '.png'
+                "
+              />
+            </div>
+            <div
+              v-for="j in 50"
+              :key="j + 'Mfers'"
+              :class="{ active: role.id === 'Mfers' + j }"
+              @click="setRole('Mfers', j)"
+            >
+              <img
+                :src="
+                  'https://mfers2.oss-cn-shenzhen.aliyuncs.com/pfp/Mfers' +
+                  j +
+                  '.png'
+                "
+              />
+            </div>
+            <div
+              v-for="k in 50"
+              :key="k + 'Doodles'"
+              :class="{ active: role.id === 'Doodles' + k }"
+              @click="setRole('Doodles', k)"
+            >
+              <img
+                :src="
+                  'https://doodles.oss-cn-shenzhen.aliyuncs.com/pfp/Doodles' +
+                  k +
+                  '.png'
+                "
+              />
+            </div>
+            <div
+              v-for="i in 50"
+              :key="i + 'MoonBirds'"
+              :class="{ active: role.id === 'MoonBirds' + i }"
+              @click="setRole('MoonBirds', i)"
+            >
+              <img
+                :src="
+                  'https://moonbirds.oss-cn-shenzhen.aliyuncs.com/pfp/MoonBirds' +
+                  i +
+                  '.png'
+                "
+              />
+            </div>
+            <div
+              v-for="i in 50"
+              :key="i + 'CoolCats'"
+              :class="{ active: role.id === 'CoolCats' + i }"
+              @click="setRole('CoolCats', i)"
+            >
+              <img
+                :src="
+                  'https://coolcats.oss-cn-shenzhen.aliyuncs.com/pfp/CoolCats' +
+                  i +
+                  '.png'
+                "
+              />
             </div>
           </div>
         </div>
@@ -699,12 +817,21 @@
       <div class="connectTip-center">
         <img src="../assets/connect.svg" />
         <p>MANUALLY CONNECT A WALLET</p>
+
+        <div
+          @click="getLocalAccount"
+          title="ALL FUNCTIONS CAN BE ACCESSED BUT YOUR IN-GAME CREDIT WON'T BE RECORDED"
+        >
+          TOURIST
+        </div>
+        <div @click="connect" style="background-color: #8d6ef4; color: #fff">
+          LOG IN BY WALLET
+        </div>
         <p style="font-size: 14px">
           Please keep in mind that we are not collecting any information from
           your wallet. If you have any concerns, link a fresh wallet or one with
           no balance.
         </p>
-        <div @click="getLocalAccount">Guest Login</div>
       </div>
     </div>
 
@@ -792,12 +919,19 @@
       <div @click="cancelBubble($event)">
         <!-- <div class="buildOff">BUILD YOUR OFFICE</div> -->
         <div class="officeCon">
+          <p
+            class="close_frame"
+            @click="
+              showCompany = false;
+              setGamefocus();
+            "
+          >
+            X
+          </p>
           <div class="bgImg">
             <img class="left" src="../assets/bg-left.png" />
-            <img class="right" src="../assets/bg-right.png" />
           </div>
           <h2>PICK AN OFFICE TO ENTER</h2>
-          <img src="../assets/bg-title.png" />
           <div class="info">
             <div
               class="officeList"
@@ -845,6 +979,9 @@
               <div class="text">ENTER</div>
             </div>
           </div>
+          <div class="bgImg bgImg_right">
+            <img class="right" src="../assets/taskright.png" />
+          </div>
         </div>
       </div>
     </div>
@@ -858,23 +995,28 @@
       "
     >
       <div class="officeCon" @click="cancelBubble($event)">
+        <p
+          class="close_frame"
+          @click="
+            showInvite = false;
+            setGamefocus();
+          "
+        >
+          X
+        </p>
         <div class="bgImg">
           <img class="left" src="../assets/bg-left.png" />
-          <img class="right" src="../assets/bg-right.png" />
         </div>
-        <h2>Invite</h2>
-        <img src="../assets/bg-title.png" />
+        <h2>INVITE FRIEND</h2>
         <div class="info">
-          <!-- <p>Input Your Friend's Wallet Address</p>
-          <div>
-            <input v-model="friendAddress" placeholder="Address" />
-            <span>Invite</span>
-          </div> -->
           <p>Send An Invite Link To Your Friend</p>
           <div>
             <input id="inviteLink" readOnly v-model="inviteLink" />
             <span @click="copyLink">Copy</span>
           </div>
+        </div>
+        <div class="bgImg bgImg_right">
+          <img class="right" src="../assets/taskright.png" />
         </div>
       </div>
     </div>
@@ -888,12 +1030,19 @@
       "
     >
       <div class="officeCon" @click="cancelBubble($event)">
+        <p
+          class="close_frame"
+          @click="
+            showCompany = false;
+            setGamefocus();
+          "
+        >
+          X
+        </p>
         <div class="bgImg">
           <img class="left" src="../assets/bg-left.png" />
-          <img class="right" src="../assets/bg-right.png" />
         </div>
         <h2>APPLICATION</h2>
-        <img src="../assets/bg-title.png" />
         <div class="textInfo">
           Sorry, you are not invited. Please submit an application and kindly
           wait for your invite link.
@@ -912,6 +1061,9 @@
           <div class="container"></div>
           <div class="text">APPLY</div>
         </div>
+        <div class="bgImg bgImg_right">
+          <img class="right" src="../assets/taskright.png" />
+        </div>
       </div>
     </div>
 
@@ -924,9 +1076,17 @@
       "
     >
       <div class="officeCon" @click="cancelBubble($event)">
+        <p
+          class="close_frame"
+          @click="
+            showCompany = false;
+            setGamefocus();
+          "
+        >
+          X
+        </p>
         <div class="bgImg">
           <img class="left" src="../assets/bg-left.png" />
-          <img class="right" src="../assets/bg-right.png" />
         </div>
         <div class="textInfo">
           Sorry, your application has been declined due to some reasons. Please
@@ -946,6 +1106,9 @@
           <div class="container"></div>
           <div class="text">FINISH</div>
         </div>
+        <div class="bgImg bgImg_right">
+          <img class="right" src="../assets/taskright.png" />
+        </div>
       </div>
     </div>
 
@@ -958,9 +1121,17 @@
       "
     >
       <div class="officeCon" @click="cancelBubble($event)">
+        <p
+          class="close_frame"
+          @click="
+            showUploadLogo = false;
+            setGamefocus();
+          "
+        >
+          X
+        </p>
         <div class="bgImg">
           <img class="left" src="../assets/bg-left.png" />
-          <img class="right" src="../assets/bg-right.png" />
         </div>
         <div class="info">
           <img :src="logoSrc" style="width: 200px; height: 200px" />
@@ -999,6 +1170,10 @@
           </div>
           <div class="container"></div>
           <div class="text">UPLOAD</div>
+        </div>
+
+        <div class="bgImg bgImg_right">
+          <img class="right" src="../assets/taskright.png" />
         </div>
       </div>
     </div>
@@ -1045,9 +1220,17 @@
       "
     >
       <div class="officeCon" @click="cancelBubble($event)">
+        <p
+          class="close_frame"
+          @click="
+            showCreateroom = false;
+            setGamefocus();
+          "
+        >
+          X
+        </p>
         <div class="bgImg">
           <img class="left" src="../assets/bg-left.png" />
-          <img class="right" src="../assets/bg-right.png" />
         </div>
         <h2>BUILD AN OFFICE</h2>
         <div class="createOffice">
@@ -1101,6 +1284,10 @@
           </div>
           <div class="container"></div>
           <div class="text">BUILD</div>
+        </div>
+
+        <div class="bgImg bgImg_right">
+          <img class="right" src="../assets/taskright.png" />
         </div>
       </div>
     </div>
@@ -1164,6 +1351,15 @@
       :postersId="postersId"
       @updateMeetingBill="updateMeetingBill"
     ></UploadPosters>
+    <Desk
+      v-if="showDesk"
+      :account="account"
+      :webRtc="webRtc"
+      @closeDesk="
+        showDesk = false;
+        setGamefocus();
+      "
+    ></Desk>
   </div>
 </template>
 <script>
@@ -1176,10 +1372,11 @@ import Customized from "../components/Customized.vue";
 import Task from "../components/Task.vue";
 import NewBee from "../components/NewBee.vue";
 import Company from "../components/company.vue";
+import Desk from "../components/desk.vue";
 import UploadPosters from "../components/UploadPosters.vue";
 import MenuDetail from "../components/MenuDetail.vue";
 import pmSetting from "../components/pmSetting.vue";
-import Web3 from 'web3'
+import Web3 from "web3";
 export default {
   name: "VideoChat",
   components: {
@@ -1190,6 +1387,7 @@ export default {
     Company,
     NewBee,
     pmSetting,
+    Desk,
   },
   data: () => ({
     webRtc: null,
@@ -1232,7 +1430,7 @@ export default {
     activeVideo: null,
     openBoard: false,
     openBlocks: false,
-    role: 1,
+    role: { id: 1, nftname: "", nftid: 0 },
     roleName: "",
     showChangeRole: false,
     roleList: [
@@ -1318,7 +1516,9 @@ export default {
     leave: false,
     taskTotal: 0,
     miniScreen: false,
-    showYvette: false
+    showYvette: false,
+    currentMapId: 0,
+    showDesk: false,
   }),
   computed: {
     vueConns() {
@@ -1333,6 +1533,9 @@ export default {
     vueTalkMsg() {
       return this.$store.state.talkMsg || [];
     },
+    vueTeamMsg() {
+      return this.$store.state.teamMsg || [];
+    },
     vueAllTalkMsg() {
       let msgArr = this.$store.state.nearByMsg.concat(
         this.$store.state.talkMsg
@@ -1344,8 +1547,8 @@ export default {
     openScreen() {
       return this.$store.state.openScreen || false;
     },
-    changeRole() {
-      return this.$store.state.role || false;
+    localRole() {
+      return this.$store.state.role || {};
     },
     openLiveScreen() {
       return this.$store.state.openLiveScreen || false;
@@ -1362,6 +1565,7 @@ export default {
   },
   async created() {
     let self = this;
+    this.role = this.localRole;
     if (window.location.href.indexOf("w3.work") > -1) {
       this.locationUrl = "https://alpha.w3.work";
       this.liveChannel = "w3";
@@ -1369,13 +1573,17 @@ export default {
       this.locationUrl = "https://alpha.w3work.org";
       this.liveChannel = "w3work";
     }
-    self.connect();
+    if(localStorage.getItem("useWallet") != 'true') {
+      this.isConnectTip = true;
+    } else {
+      this.connect();
+    }
 
-    setTimeout(() => {
-      if (!this.account) {
-        this.isConnectTip = true;
-      }
-    }, 10000);
+    // setTimeout(() => {
+    //   if (!this.account) {
+    //     this.isConnectTip = true;
+    //   }
+    // }, 10000);
     if (window.location.href.indexOf("office") > -1) {
       let address = window.location.href.split("=");
       if (address[1]) {
@@ -1407,6 +1615,13 @@ export default {
       } else {
         func("wss://metahq.w3work.org", "https://alpha.w3work.org");
       }
+      // if (href.indexOf("w3.work") > -1) {
+      //   func("wss://metahq.w3.work", "https://alpha.w3.work");
+      // } else if (href.indexOf("w3work") > -1) {
+      //   func("wss://metahq.w3work.org", "https://alpha.w3work.org");
+      // } else {
+      //   func("wss://wxgame.qweiyou.com:5745", "");
+      // }
     };
 
     window["closePeer"] = async (targetID) => {
@@ -1430,12 +1645,18 @@ export default {
     // };
 
     window["setMembersList"] = async (list) => {
+      // console.log(list)
       this.membersList = list;
       this.getMembersUnreadNum();
     };
     window["setTeamList"] = async (list) => {
-      this.teamIds = list.split("-");
-      this.webRtc.sendToGdevelop("queryother", { ids: list });
+      if (this.currentMapId !== list.mapid) {
+        this.currentMapId = list.mapid;
+        // console.log(this.currentMapId)
+        this.$store.commit("setTeamId", list.mapid);
+      }
+      this.teamIds = list.onceuser.split("-");
+      this.webRtc.sendToGdevelop("queryother", { ids: list.onceuser });
     };
     window["otherInfo"] = async (list) => {
       // console.log("otherInfo ", list);
@@ -1458,7 +1679,6 @@ export default {
     window["setMyself"] = async (list) => {
       // console.log('myself', list);
       this.taskTotal = list.score;
-      // console.log("taskTotal ", this.taskTotal);
       // console.log("this.followedIds ", list);
       this.followedIds = Array.from(new Set(list.follow.split("-")));
       setTimeout(() => {
@@ -1540,7 +1760,6 @@ export default {
       }
     };
     window["setPosition"] = async (mapid, x, y, xTotal, yTotal) => {
-      // console.log(mapid)
       this.ifLodingComplete = true;
       this.currentLocation(mapid, x, y, xTotal, yTotal);
       var url = window.location.href;
@@ -1548,10 +1767,10 @@ export default {
         url = url.replace(/(\?|#)[^'"]*/, "");
         window.history.pushState({}, 0, url);
       }
-      if(mapid == 201) {
-          this.inviteLink = this.locationUrl + "/?office=" + this.account;
-        } else {
-          this.inviteLink = this.locationUrl + "/?toffice=" + this.account;
+      if (mapid == 201) {
+        this.inviteLink = this.locationUrl + "/?office=" + this.account;
+      } else {
+        this.inviteLink = this.locationUrl + "/?toffice=" + this.account;
       }
     };
     window["setPeerStatus"] = async (arr) => {
@@ -1688,7 +1907,7 @@ export default {
       document.querySelector(".home").style.setProperty("--miniMapTop", "30px");
       document.querySelector(".home").style.setProperty("--topM", "240px");
       document.querySelector(".home").style.setProperty("--tipTop", "190px");
-      document.querySelector(".home").style.setProperty("--tipLeft", "48px");
+      document.querySelector(".home").style.setProperty("--tipLeft", "12px");
     } else {
       this.miniScreen = true;
     }
@@ -1696,12 +1915,49 @@ export default {
     this.miniMapH = $(".miniMap").height();
   },
   methods: {
+    getTeamListUnread() {
+      if (this.vueTeamMsg != null && this.vueTeamMsg != []) {
+        let count = 0;
+        this.vueTeamMsg.forEach((v) => {
+          if (
+            v.sender !== this.nearBylist[0].id &&
+            !v.read &&
+            v.target === this.currentMapId
+          ) {
+            count = count + 1;
+          }
+        });
+        this.teamList.forEach((v, i) => {
+          let userList = this.vueTalkMsg.filter(
+            (val) => val.sender === v.id && val.target !== 1
+          );
+          let userCount = 0;
+          userList.forEach((v) => {
+            if (v.sender !== this.nearBylist[0].id && !v.read) {
+              userCount = userCount + 1;
+            }
+          });
+          this.teamList[i].unreadNum = userCount;
+        });
+        this.teamList.unreadNum = count;
+        console.log(this.teamList);
+      }
+    },
+    setRole(name, id) {
+      if (name == "") {
+        this.role.id = id;
+      } else {
+        this.role.id = name + id;
+        this.role.nftname = name;
+        this.role.nftid = id;
+      }
+    },
     triggleAudio() {
-      if(this.liveHouse) {
-        if(this.openLiveAudio == true) {
-          this.setLiveAudioClose()
+      if (this.liveHouse) {
+        if (this.openLiveAudio == true) {
+          this.setLiveAudioClose();
         } else {
-          this.setLiveAudioOpen()
+          this.setLiveAudioOpen();
         }
       } else {
         let status = this.openAudio === false ? true : false;
@@ -1709,17 +1965,18 @@ export default {
       }
     },
     async getLocalAccount() {
-        localStorage.setItem("userAddress", '');
-        const web3 = new Web3();
-        let a = web3.eth.accounts.create("w3work");
-        this.account = a.address;
-        if(!this.webRtc) {
-          await this.initWebRTC()
-        }
-        this.showChangeRole = true;
+      localStorage.setItem("userAddress", "");
+      const web3 = new Web3();
+      let a = web3.eth.accounts.create("w3work");
+      this.account = a.address.toLowerCase();
+      localStorage.setItem("useWallet", false)
+      if (!this.webRtc) {
+        await this.initWebRTC();
+      }
+      this.showChangeRole = true;
     },
     showYveguide() {
-      if(this.showYvette) return
+      if (this.showYvette) return;
       let user = {
         hasAudioTrack: true,
         hasVideoTrack: true,
@@ -1727,14 +1984,14 @@ export default {
         loadingStatus: false,
         speakingLevel: 20,
         status: 1,
-        uid: 'Yvette',
+        uid: "Yvette",
       };
       this.liveVideos.push(user);
-      this.showYvette = true
+      this.showYvette = true;
     },
     hideYveguide() {
-      this.liveVideos.splice(0,1);
-      this.showYvette = false
+      this.liveVideos.splice(0, 1);
+      this.showYvette = false;
     },
     changeTask() {
       this.showMenu = false;
@@ -1872,7 +2129,7 @@ export default {
       }
     },
     getShowControls(uid) {
-      if(uid == 'Yvette') return true
+      if (uid == "Yvette") return true;
       if (uid) {
         let id = uid.toString().slice(0, 5);
         if (parseInt(id) < 90000) {
@@ -1987,9 +2244,64 @@ export default {
         }, 2000);
       }
     },
-    getRoleImg(id) {
-      if (id !== undefined) {
-        return require("../assets/avatar" + id + ".png");
+    getNearByImg(id) {
+      let arr = 1;
+      for (let i = 0; i < this.nearBylist.length; i++) {
+        if (this.nearBylist[i].id == id) {
+          arr = this.nearBylist[i];
+        }
+      }
+      return this.getRoleImg(arr);
+    },
+    getRoleImg(image) {
+      if (image == 1) {
+        return require("../assets/avatar" + 1 + ".png");
+      }
+      if (
+        image !== undefined &&
+        (image.nftname == "" || image.nftname == undefined)
+      ) {
+        return require("../assets/avatar" + image.image + ".png");
+      }
+      if (image !== undefined && image.nftname !== "") {
+        switch (image.nftname) {
+          case "BAYC":
+            return (
+              "https://bayc2.oss-cn-shenzhen.aliyuncs.com/pfp/BAYC" +
+              image.nftid +
+              ".png"
+            );
+          case "Doodles":
+            return (
+              "https://doodles.oss-cn-shenzhen.aliyuncs.com/pfp/Doodles" +
+              image.nftid +
+              ".png"
+            );
+          case "Mfers":
+            return (
+              "https://mfers2.oss-cn-shenzhen.aliyuncs.com/pfp/Mfers" +
+              image.nftid +
+              ".png"
+            );
+          case "MoonBirds":
+            return (
+              "https://moonbirds.oss-cn-shenzhen.aliyuncs.com/pfp/MoonBirds" +
+              image.nftid +
+              ".png"
+            );
+          case "CoolCats":
+            return (
+              "https://coolcats.oss-cn-shenzhen.aliyuncs.com/pfp/CoolCats" +
+              image.nftid +
+              ".png"
+            );
+          default:
+            return (
+              "https://bayc2.oss-cn-shenzhen.aliyuncs.com/pfp/BAYC" +
+              image.nftid +
+              ".png"
+            );
+        }
       }
     },
     async mountFastboard() {
@@ -2324,7 +2636,7 @@ export default {
       this.showMenu = false;
       this.showChangeRole = true;
       this.roleName = this.nearBylist[0] ? this.nearBylist[0].nickname : "";
-      this.role = this.nearBylist[0] ? this.nearBylist[0].image : 1;
+      this.role.id = this.nearBylist[0] ? this.nearBylist[0].image : 1;
       this.isSettingStatus = true;
     },
     async currentLocation(mapid, x, y, xTotal, yTotal) {
@@ -2392,20 +2704,26 @@ export default {
         .trim();
       if (this.roleName !== "") {
         let old = localStorage.getItem("userAddress");
+        this.role.name = this.roleName;
         if (old == this.account) {
+          // console.log(this.role)
           this.webRtc.sendToGdevelop("changename", {
-            role: this.role,
+            role: this.role.nftname != "" ? 1 : this.role.id,
             name: this.roleName,
+            nftname: this.role.nftname,
+            nftid: this.role.nftname != "" ? this.role.nftid : 0,
           });
         } else {
           this.webRtc.sendToGdevelop("setAccount", {
             address: this.account,
-            role: this.role,
+            role: this.role.nftname != "" ? 1 : this.role.id,
             name: this.roleName,
+            nftname: this.role.nftname,
+            nftid: this.role.nftname != "" ? this.role.nftid : 0,
           });
           localStorage.setItem("userAddress", this.account);
         }
-        this.$store.commit("setRole", true);
+        this.$store.commit("setRole", this.role);
         this.showChangeRole = false;
       } else {
         this.nameTips = true;
@@ -2425,6 +2743,11 @@ export default {
       let messageCount = 0;
       if (this.nearBylist.length !== 0 && this.menuIndex !== 0) {
         this.vueAllTalkMsg.forEach((v) => {
+          if (v.sender !== this.nearBylist[0].id && !v.read) {
+            messageCount = messageCount + 1;
+          }
+        });
+        this.vueTeamMsg.forEach((v) => {
           if (v.sender !== this.nearBylist[0].id && !v.read) {
             messageCount = messageCount + 1;
           }
@@ -2460,6 +2783,21 @@ export default {
         this.membersList.unreadNum = count;
       }
       this.everyOneList = this.nearBylist.concat(this.membersList);
+
+      if (this.teamList != null && this.teamList != []) {
+        this.teamList.forEach((v, i) => {
+          let userList2 = this.vueTalkMsg.filter(
+            (val) => val.sender === v.id && val.target !== 1
+          );
+          let userCount2 = 0;
+          userList2.forEach((v) => {
+            if (v.sender !== this.nearBylist[0].id && !v.read) {
+              userCount2 = userCount2 + 1;
+            }
+          });
+          this.teamList[i].unreadNum = userCount2;
+        });
+      }
     },
     getNearByUnreadNum() {
       if (this.vueNearByMsg != null && this.vueNearByMsg != []) {
@@ -2514,6 +2852,12 @@ export default {
           this.$store.commit("addReadStatus", "Everyone");
         } else if (this.sendObject === "Nearby") {
           this.$store.commit("addReadStatus", "Nearby");
+        } else if (this.sendObject === "Team") {
+          this.$store.commit("addReadTeamStatus", "Team");
+
+          setTimeout(() => {
+            this.getTeamListUnread();
+          }, 2000);
         } else {
           this.$store.commit("addReadStatus", this.sendUser);
         }
@@ -2530,6 +2874,11 @@ export default {
             this.$store.commit("addReadStatus", "Everyone");
           } else if (this.sendObject === "Nearby") {
             this.$store.commit("addReadStatus", "Nearby");
+          } else if (this.sendObject === "Team") {
+            this.$store.commit("addReadTeamStatus", "Team");
+            setTimeout(() => {
+              this.getTeamListUnread();
+            }, 2000);
           } else {
             this.$store.commit("addReadStatus", this.sendUser);
           }
@@ -2590,12 +2939,14 @@ export default {
         if (localStorage.getItem("userAddress") != this.account) {
           this.showChangeRole = true;
           this.roleName = this.nearBylist[0] ? this.nearBylist[0].nickname : "";
-          this.role = this.nearBylist[0] ? this.nearBylist[0].image : 1;
+          this.role.id = this.nearBylist[0] ? this.nearBylist[0].image : 1;
         } else {
           this.webRtc.sendToGdevelop("setAccount", {
             address: this.account,
-            role: 1,
-            name: "",
+            role: this.role.nftname != "" ? 1 : this.role.id,
+            name: this.role.name,
+            nftname: this.role.nftname,
+            nftid: this.role.nftname != "" ? this.role.nftid : 0,
           });
         }
       }
@@ -2617,19 +2968,19 @@ export default {
             method: "eth_requestAccounts",
           })
           .then(async (res) => {
-            this.account = res[0];
+            this.account = res[0].toLowerCase();
             that.isConnectTip = false;
+            localStorage.setItem("useWallet", true)
             if (this.isInitWebRTC) {
-              if (
-                JSON.parse(this.changeRole) === false ||
-                localStorage.getItem("userAddress") != this.account
-              ) {
+              if (localStorage.getItem("userAddress") != this.account) {
                 this.showChangeRole = true;
               } else {
                 this.webRtc.sendToGdevelop("setAccount", {
                   address: this.account,
-                  role: 1,
-                  name: "",
+                  role: this.role.nftname != "" ? 1 : this.role.id,
+                  name: this.role.name,
+                  nftname: this.role.nftname,
+                  nftid: this.role.nftname != "" ? this.role.nftid : 0,
                 });
               }
             }
@@ -2645,14 +2996,13 @@ export default {
 
         window.ethereum.on("accountsChanged", async (accounts) => {
           if (accounts.length > 0) {
-            this.account = accounts[0];
-            this.$store.commit("setRole", false);
+            this.account = accounts[0].toLowerCase();
+            // this.$store.commit("setRole", false);
             location.reload();
           }
         });
-      }
-       else {
-        this.isConnectTip = true
+      } else {
+        this.isConnectTip = true;
       }
     },
     mouseUserOver() {
@@ -2665,7 +3015,7 @@ export default {
   },
   watch: {
     account() {
-      if(this.account) this.isConnectTip = false
+      if (this.account) this.isConnectTip = false;
     },
     openVideo() {
       if (this.openVideo == true) {

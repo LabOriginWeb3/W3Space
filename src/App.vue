@@ -64,4 +64,9 @@ p {
   display: flex;
   background-color: #485bff !important;
 }
+
+@font-face {
+  font-family: "Silkscreen";
+  src: url("./assets/font/Silkscreen-Regular.ttf");
+}
 </style>

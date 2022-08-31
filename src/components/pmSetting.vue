@@ -1,6 +1,13 @@
 <template>
   <div class="pmSetting officeBg" @click="closePmSetting">
     <div class="officeCon" @click="cancelBubble($event)">
+      <p
+        class="close_frame"
+        @click="closePmSetting"
+        style="margin-left: 824px !important; margin-top: -68px !important"
+      >
+        X
+      </p>
       <div v-show="showPmInput">
         <div class="pm">
           <p>Create office:({{ locationUrl + "?office=" + pmAddress }})</p>
@@ -46,9 +53,9 @@
           <p>Set office show/unshow:</p>
           <input
             class="roomName"
-            v-model="roomId"
-            type="number"
-            placeholder="office id"
+            v-model="roomName"
+            type="text"
+            placeholder="office Name"
           />
 
           <input
@@ -56,7 +63,7 @@
             v-model="pmShowCompany"
             placeholder="0 hide/ 1 show"
           />
-          <div @click="pmSetplate(roomId, pmShowCompany)">Set</div>
+          <div @click="pmSetplate(roomName, pmShowCompany)">Set</div>
         </div>
         <div
           v-if="invitationLink"
@@ -284,12 +291,12 @@ export default {
         }, 1000);
       }
     },
-    pmSetplate(id, status) {
-      if (id) {
+    pmSetplate(roomName, status) {
+      if (roomName) {
         this.webRtc.sendToGdevelop("pm", {
           cmd: "setplate",
           address: "",
-          param: { roomid: Number(id), set: status ? 1 : 0 },
+          param: { roomid: 0, name: roomName, set: status ? 1 : 0 },
         });
 
         setTimeout(() => {

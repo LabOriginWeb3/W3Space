@@ -9,14 +9,14 @@
     @click="closeMenu"
   >
     <div class="menu-detail" @click="cancelBubble($event)">
-      <div class="message-menu">
+      <div class="message-menu" v-show="menuIndex === 0">
         <div
           class="change-user"
           :style="menuIndex === 0 ? '' : 'display:none'"
           @click="mouseSendOver"
         >
           {{ sendObject }}
-          <img class="selectIcon" src="../assets/select.png" />
+          <img class="selectIcon" src="../assets/select2.png" />
         </div>
       </div>
       <div class="menu-center">
@@ -31,7 +31,7 @@
                   {{ new Date(item.time).toLocaleDateString() }}
                 </p>
                 <div class="sendUser">
-                  <img :src="getRoleImg(item.head)" />
+                  <img class="avatar-head" :src="getRoleImg(item.head)" />
                   <div>
                     <p>
                       {{ item.senderName ? item.senderName : "" }}
@@ -61,7 +61,7 @@
                 {{ new Date(item.time).toLocaleDateString() }}
               </p>
               <div class="sendUser">
-                <img :src="getRoleImg(item.head)" />
+                <img class="avatar-head" :src="getRoleImg(item.head)" />
                 <div>
                   <p>
                     {{ item.senderName ? item.senderName : "" }}
@@ -81,7 +81,44 @@
               </div>
             </div>
           </div>
-          <div v-show="sendObject != 'Nearby' && sendObject != 'Everyone'">
+          <div v-show="sendObject === 'Team'">
+            <div v-for="(item, index) in vueTeamMsg" :key="index">
+              <div v-if="item.target === currentMapId">
+                <p class="date" v-if="index !== 0">
+                  {{ getMsgDate(item.time, vueTeamMsg[index - 1].time) }}
+                </p>
+                <p class="date" v-else>
+                  {{ new Date(item.time).toLocaleDateString() }}
+                </p>
+                <div class="sendUser">
+                  <img class="avatar-head" :src="getRoleImg(item.head)" />
+                  <div>
+                    <p>
+                      {{ item.senderName ? item.senderName : "" }}
+                    </p>
+                  </div>
+                  <span>{{ getMsgSendDate(item.time) }}</span>
+                </div>
+                <div
+                  :class="{
+                    sendMsg: true,
+                    self: nearBylist[0]
+                      ? nearBylist[0].nickname === item.senderName
+                      : false,
+                  }"
+                >
+                  <div v-html="item.msg"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            v-show="
+              sendObject != 'Nearby' &&
+              sendObject != 'Everyone' &&
+              sendObject != 'Team'
+            "
+          >
             <div v-for="(item, index) in msgList" :key="index">
               <p class="date" v-if="index !== 0">
                 {{ getMsgDate(item.time, msgList[index - 1].time) }}
@@ -90,7 +127,7 @@
                 {{ new Date(item.time).toLocaleDateString() }}
               </p>
               <div class="sendUser">
-                <img :src="getRoleImg(item.head)" />
+                <img class="avatar-head" :src="getRoleImg(item.head)" />
                 <div>
                   <p>
                     {{ item.senderName ? item.senderName : "" }}
@@ -132,7 +169,7 @@
               class="contactsInfo"
             >
               <div @click="goSendMsg(item)">
-                <img :src="getRoleImg(item.image)" />
+                <img class="avatar-head" :src="getRoleImg(item)" />
                 <span
                   :class="{
                     status: true,
@@ -237,7 +274,7 @@
           <div v-show="showEveryone">
             <div v-for="(item, index) in membersList" :key="index">
               <div @click="goSendMsg(item)">
-                <img :src="getRoleImg(item.image)" />
+                <img class="avatar-head" :src="getRoleImg(item)" />
                 <span
                   :class="{
                     status: true,
@@ -328,7 +365,7 @@
               class="contactsInfo"
             >
               <div @click="goSendMsg(item)">
-                <img :src="getRoleImg(item.image)" />
+                <img class="avatar-head" :src="getRoleImg(item)" />
                 <span
                   v-if="item.id !== nearBylist[0].id"
                   :class="{
@@ -448,7 +485,7 @@
           <div v-show="showFollow">
             <div v-for="(item, index) in followList" :key="index">
               <div @click="goSendMsg(item)">
-                <img :src="getRoleImg(item.image)" />
+                <img class="avatar-head" :src="getRoleImg(item)" />
                 <span
                   :class="{
                     status: true,
@@ -540,8 +577,6 @@
             v-show="
               membersList.unreadNum &&
               membersList.unreadNum !== 0 &&
-              showMenu &&
-              menuIndex === 0 &&
               sendObject !== 'Everyone'
             "
             >{{ membersList.unreadNum }}</span
@@ -554,11 +589,21 @@
             v-show="
               nearBylist.unreadNum &&
               nearBylist.unreadNum !== 0 &&
-              showMenu &&
-              menuIndex === 0 &&
               sendObject !== 'Nearby'
             "
             >{{ nearBylist.unreadNum }}</span
+          >
+        </p>
+        <p @click="changeSend('Team')" v-show="teamList.length > 0">
+          <img src="../assets/team.svg" /> Team
+          <span
+            class="unreadNum"
+            v-show="
+              teamList.unreadNum &&
+              teamList.unreadNum !== 0 &&
+              sendObject !== 'Team'
+            "
+            >{{ teamList.unreadNum }}</span
           >
         </p>
         <div
@@ -569,7 +614,7 @@
           v-show="nearBylist[0].id != item.id"
         >
           <div>
-            <img :src="getRoleImg(item.image)" />
+            <img class="avatar-head" :src="getRoleImg(item)" />
             <span
               :class="{
                 status: true,
@@ -588,8 +633,6 @@
             v-show="
               item.unreadNum &&
               item.unreadNum !== 0 &&
-              showMenu &&
-              menuIndex === 0 &&
               sendObject !== item.nickname
             "
             >{{ item.unreadNum }}</span
@@ -620,6 +663,8 @@ export default {
       showEveryone: false,
       showNearby: false,
       showFollow: false,
+      timecheck: null,
+      timecheck2:null,
     };
   },
   props: [
@@ -638,6 +683,8 @@ export default {
     "mapId",
     "isAdmin",
     "meetingName",
+    "currentMapId",
+    "vueTeamMsg",
   ],
 
   computed: {
@@ -648,8 +695,55 @@ export default {
       return EmojiGroups;
     },
   },
-  created() {},
+  created() {
+    window["queryChatOK"] = async (list) => {
+      if (list.Ary !== null) {
+        let ary = list.Ary;
+        for (let i = 0; i < ary.length; i++) {
+          if (JSON.parse(ary[i]).sender !== this.nearBylist[0].id) {
+            if (JSON.parse(ary[i]).target !== this.currentMapId) {
+              if (JSON.parse(ary[i]).target === this.nearBylist[0].id) {
+                this.$store.commit("addTalkMsg", JSON.parse(ary[i]));
+              }
+            } else {
+              this.$store.commit("addTeamMsg", JSON.parse(ary[i]));
+            }
+          }
+        }
+        this.$emit("getTeamListUnread");
+      }
+    };
+  },
   watch: {
+    teamList: function () {
+      if (this.teamList.length !== 0) {
+        this.timecheck = setInterval(() => {
+          this.webRtc.sendToGdevelop("querychat", {
+            targetID: this.currentMapId,
+          });
+          for (let i = 0; i < this.teamList.length; i++) {
+            this.webRtc.sendToGdevelop("querychat", {
+              targetID: this.teamList[i].id,
+            });
+          }
+        }, 3000);
+      } else {
+        clearInterval(this.timecheck);
+      }
+    },
+    followList: function () {
+      if (this.teamList.length !== 0) {
+        this.timecheck2 = setInterval(() => {
+          for (let j = 0; j < this.followList.length; j++) {
+            this.webRtc.sendToGdevelop("querychat", {
+              targetID: this.followList[j].id,
+            });
+          }
+        }, 3000);
+      } else {
+        clearInterval(this.timecheck2);
+      }
+    },
     vueTalkMsg: function () {
       this.msgList = this.vueTalkMsg.filter(
         (val) =>
@@ -660,13 +754,21 @@ export default {
           val.target !== 1
       );
     },
+    vueTeamMsg: function () {
+      this.$nextTick(() => {
+        setTimeout(() => {
+          var container = this.$el.querySelector("#sengMsg");
+          container.scrollTop = container.scrollHeight;
+        }, 100);
+      });
+    },
   },
   methods: {
     setSponsorIcon(id, isSponsor) {
       this.webRtc.sendToGdevelop("setSponsor", {
-          userID: id,
-          set: isSponsor == 1 ? 0:1
-        });
+        userID: id,
+        set: isSponsor == 1 ? 0 : 1,
+      });
     },
     closeMenu() {
       this.$emit("closeMenu", false);
@@ -703,9 +805,55 @@ export default {
         return time;
       }
     },
-    getRoleImg(id) {
-      if (id !== undefined) {
-        return require("../assets/avatar" + id + ".png");
+    getRoleImg(image) {
+      if (image == 1) {
+        return require("../assets/avatar" + 1 + ".png");
+      }
+      if (
+        image !== undefined &&
+        (image.nftname == "" || image.nftname == undefined)
+      ) {
+        return require("../assets/avatar" + image.image + ".png");
+      }
+      if (image !== undefined && image.nftname !== "") {
+        switch (image.nftname) {
+          case "BAYC":
+            return (
+              "https://bayc2.oss-cn-shenzhen.aliyuncs.com/pfp/BAYC" +
+              image.nftid +
+              ".png"
+            );
+          case "Doodles":
+            return (
+              "https://doodles.oss-cn-shenzhen.aliyuncs.com/pfp/Doodles" +
+              image.nftid +
+              ".png"
+            );
+          case "Mfers":
+            return (
+              "https://mfers2.oss-cn-shenzhen.aliyuncs.com/pfp/Mfers" +
+              image.nftid +
+              ".png"
+            );
+          case "MoonBirds":
+            return (
+              "https://moonbirds.oss-cn-shenzhen.aliyuncs.com/pfp/MoonBirds" +
+              image.nftid +
+              ".png"
+            );
+          case "CoolCats":
+            return (
+              "https://coolcats.oss-cn-shenzhen.aliyuncs.com/pfp/CoolCats" +
+              image.nftid +
+              ".png"
+            );
+          default:
+            return (
+              "https://bayc2.oss-cn-shenzhen.aliyuncs.com/pfp/BAYC" +
+              image.nftid +
+              ".png"
+            );
+        }
       }
     },
     getMsgSendDate(item) {
@@ -775,6 +923,8 @@ export default {
             this.sendToOther(1, "", "");
           } else if (this.sendObject === "Nearby") {
             this.sendToNearBy();
+          } else if (this.sendObject === "Team") {
+            this.sendToOther(this.currentMapId, "", "");
           } else {
             this.sendToOther(
               this.sendUser.id,
@@ -791,7 +941,7 @@ export default {
       let obj = {
         sender: this.nearBylist[0].id,
         senderName: this.nearBylist[0].nickname,
-        head: this.nearBylist[0].image,
+        head: this.nearBylist[0],
         target: 2,
         targetName: "",
         targetHead: "",
@@ -811,18 +961,22 @@ export default {
       let obj = {
         sender: this.nearBylist[0].id,
         senderName: this.nearBylist[0].nickname,
-        head: this.nearBylist[0].image,
+        head: this.nearBylist[0],
         target: target,
         targetName: targetName,
         targetHead: targetHead,
         msg: message,
         time: new Date(),
       };
-      console.log(obj)
       this.webRtc.sendToGdevelop("talk", obj);
-      this.$store.commit("addTalkMsg", obj);
+      if (this.sendObject === "Team") {
+        this.$store.commit("addTeamMsg", obj);
+      } else {
+        this.$store.commit("addTalkMsg", obj);
+      }
+
       this.message = "";
-      if (target !== 1) {
+      if (target !== 1 && this.sendObject !== "Team") {
         this.msgList = this.vueTalkMsg.filter(
           (val) =>
             ((val.sender === this.sendUser.id &&
@@ -868,7 +1022,7 @@ export default {
       let obj = {
         sender: this.nearBylist[0].id,
         senderName: this.nearBylist[0].nickname,
-        head: this.nearBylist[0].image,
+        head: this.nearBylist[0],
         target: 3, //file
         targetName: "",
         targetHead: "",
@@ -932,32 +1086,33 @@ export default {
     },
 
     changeSend(item) {
-      if (this.sendObject === "Everyone") {
-        this.$store.commit("addReadStatus", "Everyone");
-      } else if (this.sendObject === "Nearby") {
-        this.$store.commit("addReadStatus", "Nearby");
-      } else {
-        this.$store.commit("addReadStatus", item);
-      }
-
-      if (item !== "Everyone" && item !== "Nearby") {
-        this.sendObject = item.nickname;
-        this.sendUser = item;
-        this.$emit("setSendObject", item.nickname);
-        this.$emit("setSendUser", item);
-        this.msgList = this.vueTalkMsg.filter(
-          (val) =>
-            ((val.sender === this.sendUser.id &&
-              val.target === this.nearBylist[0].id) ||
-              (val.sender === this.nearBylist[0].id &&
-                val.target === this.sendUser.id)) &&
-            val.target !== 1
-        );
-      } else {
+      if (item === "Team") {
+        this.$store.commit("addReadTeamStatus", item);
+        setTimeout(() => {
+          this.$emit("getTeamListUnread");
+        }, 2000);
         this.sendObject = item;
         this.$emit("setSendObject", item);
+      } else {
+        if (item !== "Everyone" && item !== "Nearby" && item !== "Team") {
+          this.sendObject = item.nickname;
+          this.sendUser = item;
+          this.$emit("setSendObject", item.nickname);
+          this.$emit("setSendUser", item);
+          this.msgList = this.vueTalkMsg.filter(
+            (val) =>
+              ((val.sender === this.sendUser.id &&
+                val.target === this.nearBylist[0].id) ||
+                (val.sender === this.nearBylist[0].id &&
+                  val.target === this.sendUser.id)) &&
+              val.target !== 1
+          );
+        } else {
+          this.sendObject = item;
+          this.$emit("setSendObject", item);
+        }
+        this.$store.commit("addReadStatus", item);
       }
-      this.$store.commit("addReadStatus", item);
 
       this.mouseSendLeave();
     },

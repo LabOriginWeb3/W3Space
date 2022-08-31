@@ -220,6 +220,7 @@ export default {
         this.$emit('hideYve')
         this.$store.commit("setHelpStep", 0)
       }
+      if(this.helpStatus.move && this.helpStatus.enterOffice &&this.helpStatus.social &&this.helpStatus.officeGuide &&this.helpStatus.ama && this.helpStatus.ama2 && this.helpStatus.invite ) return
       if(!this.helpStatus.move && localStorage.getItem("role") && this.helpStep < 1) {//start move guide
               this.$store.commit("setHelpStep", 0)
                     this.showNextBtn = true
@@ -317,6 +318,9 @@ export default {
         this.$store.commit("setHelpStep", this.helpStep + 1);
 
       }
+      if(this.helpStep >=5001 && this.helpStep <=5005) {
+        this.nextStep()
+      }
       if(this.helpStep == 6001) {
         this.$emit('getInvite')
         this.showCanvas = false
@@ -371,7 +375,7 @@ export default {
         this.showCanvas = true
         this.showNextBtn = false
         let width = document.getElementById("games").offsetWidth
-        this.setFocus(width - 290, 190, 200,110)
+        this.setFocus(width - 380, 100, 380,290)
       }
       if(this.helpStep == 2010 && this.helpPos.mapid==101) {//guide game
         this.$store.commit("setHelpDone", 'officeGuide');

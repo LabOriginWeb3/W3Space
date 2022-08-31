@@ -173,7 +173,7 @@ export default {
       this.clearImg = false;
       let delthingData = { set: 0 };
       this.webRtc.sendToGdevelop("delthing", delthingData);
-      $(".configureRegion").css("pointer-events", "all");
+      $(".configureRegion").css({"pointer-events":"all",cursor:"none"}); 
       let that = this;
       let url;
       if (type === "" && id === "") {

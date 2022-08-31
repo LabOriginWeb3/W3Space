@@ -10,13 +10,15 @@ export default new Vuex.Store({
     nearByMsg: JSON.parse(localStorage.getItem("nearByMsg")) || [],
     talkMsg: JSON.parse(localStorage.getItem("talkMsg")) || [],
     openScreen: localStorage.getItem("openScreen") || false,
-    role: localStorage.getItem("role") || false,
+    role: (localStorage.getItem("role") == 'true' || !localStorage.getItem("role"))?{id:1,nftname:'',nftid:0,name:''} : JSON.parse(localStorage.getItem("role")),
     roleInfo: localStorage.getItem("roleInfo") || {},
     openLiveScreen: localStorage.getItem("openLiveScreen") || false,
     officeSpaceAddress: localStorage.getItem("officeSpaceAddress") || "",
     meetingName: localStorage.getItem("meetingName") || "",
     officeSpaceType: localStorage.getItem("officeSpaceType") || 1,
-    helpStatus:JSON.parse(localStorage.getItem("helpStep")) || {helpStep:0}
+    helpStatus: JSON.parse(localStorage.getItem("helpStep")) || { helpStep: 0 },
+    teamMsg: JSON.parse(localStorage.getItem("teamMsg")) || [],
+    teamId: localStorage.getItem("teamId") || 0,
   },
   mutations: {
     setConns(state, newConns) {
@@ -39,21 +41,21 @@ export default new Vuex.Store({
       state.liveVideos = newVideos;
     },
     addNearByMsg(state, msg) {
-      console.log("msg is", msg);
+      // console.log("msg is", msg);
       let t = [];
       if (localStorage.getItem("nearByMsg") != null) {
         t = JSON.parse(localStorage.getItem("nearByMsg"));
-      } 
-      
+      }
+
       if (t.length >= 100) {
         t = t.slice(1, 100);
         localStorage.setItem("nearByMsg", JSON.stringify(t));
       }
 
-      if(msg.fileSize && msg.fileSize > 0) {
+      if (msg.fileSize && msg.fileSize > 0) {
         let id = msg.sender
-        for(let i = 0;i < t.length;i++) {
-          if(t[i].sender == id && t[i].fileSize) {
+        for (let i = 0; i < t.length; i++) {
+          if (t[i].sender == id && t[i].fileSize) {
             t.splice(i, 1)
           }
         }
@@ -63,10 +65,10 @@ export default new Vuex.Store({
       localStorage.setItem("nearByMsg", JSON.stringify(t));
       t = JSON.parse(localStorage.getItem("nearByMsg"));
       state.nearByMsg = t;
-      console.log("nearByMsg", t);
+      // console.log("nearByMsg", t);
     },
     addTalkMsg(state, msg) {
-      console.log("talk msg is", msg);
+      // console.log("talk msg is", msg);
       let t = [];
       if (localStorage.getItem("talkMsg") != null) {
         t = JSON.parse(localStorage.getItem("talkMsg"));
@@ -76,7 +78,21 @@ export default new Vuex.Store({
       localStorage.setItem("talkMsg", JSON.stringify(t));
       t = JSON.parse(localStorage.getItem("talkMsg"));
       state.talkMsg = t;
-      console.log("talkMsg", t);
+      // console.log("talkMsg", t);
+    },
+
+    addTeamMsg(state, msg) {
+      // console.log("team msg is", msg);
+      let t = [];
+      if (localStorage.getItem("teamMsg") != null) {
+        t = JSON.parse(localStorage.getItem("teamMsg"));
+      }
+
+      t.push(msg);
+      localStorage.setItem("teamMsg", JSON.stringify(t));
+      t = JSON.parse(localStorage.getItem("teamMsg"));
+      state.teamMsg = t;
+      // console.log("teamMsg", t);
     },
 
     addReadStatus(state, item) {
@@ -86,18 +102,12 @@ export default new Vuex.Store({
         if (localStorage.getItem("talkMsg") != null) {
           t = JSON.parse(localStorage.getItem("talkMsg"));
           t.forEach((v) => {
-            v.read = true
+            if (v.target === 1) {
+              v.read = true
+            }
           })
           localStorage.setItem("talkMsg", JSON.stringify(t));
           state.talkMsg = t;
-        }
-        if (localStorage.getItem("nearByMsg") != null) {
-          t = JSON.parse(localStorage.getItem("nearByMsg"));
-          t.forEach((v) => {
-            v.read = true
-          })
-          localStorage.setItem("nearByMsg", JSON.stringify(t));
-          state.nearByMsg = t;
         }
       } else if (item === 'Nearby') {
         if (localStorage.getItem("nearByMsg") != null) {
@@ -121,6 +131,24 @@ export default new Vuex.Store({
         }
       }
     },
+    addReadTeamStatus(state, item) {
+      console.log("item is", item);
+      let t = [];
+      if (localStorage.getItem("teamMsg") != null) {
+        t = JSON.parse(localStorage.getItem("teamMsg"));
+        t.forEach((v) => {
+          if (v.target === state.teamId) {
+            v.read = true
+          }
+        })
+        localStorage.setItem("teamMsg", JSON.stringify(t));
+        state.teamMsg = t;
+      }
+    },
+    setTeamId(state, status) {
+      localStorage.setItem("teamId", status);
+      state.teamId = status;
+    },
     setOpenScreen(state, status) {
       localStorage.setItem("openScreen", status);
       state.openScreen = status;
@@ -130,7 +158,7 @@ export default new Vuex.Store({
       state.openLiveScreen = status;
     },
     setRole(state, status) {
-      localStorage.setItem("role", status);
+      localStorage.setItem("role", JSON.stringify(status));
       state.role = status;
     },
     setRoleInfo(state, msg) {
@@ -160,7 +188,7 @@ export default new Vuex.Store({
       localStorage.setItem("helpStep", JSON.stringify(state.helpStatus));
     },
     clearHelp(state) {
-      state.helpStatus = {helpStep:0, move:true};
+      state.helpStatus = { helpStep: 0, move: true };
       localStorage.setItem("helpStep", JSON.stringify(state.helpStatus));
     },
   },

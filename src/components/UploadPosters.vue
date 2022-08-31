@@ -1,9 +1,9 @@
 <template>
   <div class="officeBg uploadLogo" @click="closeUploadPosters">
     <div class="officeCon" @click="cancelBubble($event)">
+      <p class="close_frame" @click="closeUploadPosters">X</p>
       <div class="bgImg">
         <img class="left" src="../assets/bg-left.png" />
-        <img class="right" src="../assets/bg-right.png" />
       </div>
       <div class="info">
         <img :src="logoSrc" style="width: 200px; height: 200px" />
@@ -43,6 +43,9 @@
         <div class="container"></div>
         <div class="text">UPLOAD</div>
       </div>
+      <div class="bgImg bgImg_right">
+        <img class="right" src="../assets/taskright.png" />
+      </div>
     </div>
   </div>
 </template>
@@ -57,17 +60,17 @@ export default {
       logoSrc: null,
       oldimg: "",
       logoFile: null,
-      roomName:"",
-      locationUrl:"",
+      roomName: "",
+      locationUrl: "",
     };
   },
   props: {
-    postersId:Number
+    postersId: Number,
   },
   computed: {},
   created() {
     let address = window.location.href.split("=");
-    this.roomName=address[1];
+    this.roomName = address[1];
     if (window.location.href.indexOf("w3.work") > -1) {
       this.locationUrl = "https://alpha.w3.work";
     } else {
@@ -113,8 +116,8 @@ export default {
             if (res.data !== "error") {
               let params = {
                 name: res.data,
-                meeting:this.roomName,
-                id:this.postersId
+                meeting: this.roomName,
+                id: this.postersId,
               };
               this.$emit("updateMeetingBill", params);
               this.logoFile = "";
