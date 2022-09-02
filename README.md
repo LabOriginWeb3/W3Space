@@ -1,7 +1,7 @@
 # w3work
 
 ### Work & Collab together in Web3.0
-### [Try our our alpha version](https://alpha.w3.work/)
+### [Try out our alpha version](https://alpha.w3.work/)
 
 W3.work: Headquarters in Metaverse
 
