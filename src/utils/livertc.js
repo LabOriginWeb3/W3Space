@@ -49,10 +49,10 @@ LiveRTC.prototype.joinAsAudience = async function (channel, token, id) {
       await this.client.leave();
     }
     this.options.uid = await this.client.join(
-      this.options.appid,
-      channel,
-      token || null,
-      id || null
+        this.options.appid,
+        channel,
+        token || null,
+        id || null
     );
     this.listenVolumn()
     this.joinedRoom[channel] = true
@@ -68,10 +68,10 @@ LiveRTC.prototype.joinAsHost = async function (channel, token, id) {
   // console.log('joinAsHost', channel, token, id)
 
   this.options.uid = await this.client.join(
-    this.options.appid,
-    channel,
-    token || null,
-    id || null
+      this.options.appid,
+      channel,
+      token || null,
+      id || null
   );
   this.listenVolumn()
 
@@ -93,10 +93,10 @@ LiveRTC.prototype.joinAsCall = async function (channel, token, id) {
   this.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
   this.options.uid = await this.client.join(
-    this.options.appid,
-    channel,
-    token || null,
-    id || null
+      this.options.appid,
+      channel,
+      token || null,
+      id || null
   );
   this.listenVolumn()
 
@@ -115,9 +115,9 @@ LiveRTC.prototype.joinAsCall = async function (channel, token, id) {
   console.log("publish success");
 }
 
-LiveRTC.prototype.getVolumeLevel = function() {
+LiveRTC.prototype.getVolumeLevel = function () {
   let a = 0
-  if(this.localTracks.audioTrack)
+  if (this.localTracks.audioTrack)
     a = this.localTracks.audioTrack.getVolumeLevel();
   return a
 }
@@ -141,7 +141,15 @@ LiveRTC.prototype.listenVolumn = async function () {
       // console.log(`UID ${volume.uid} Level ${volume.level}`);
       for (let i = 0; i < this.remoteUsers.length; i++) {
         if (this.remoteUsers[i].uid == volume.uid) {
-          this.remoteUsers[i].speakingLevel = volume.level
+          this.remoteUsers[i].speakingLevel = volume.level;
+          if (volume.level >= 15 && i !== 0) {
+            let newList = this.remoteUsers;
+            newList.unshift(newList[i]);
+            newList.splice(i + 1, 1);
+            this.remoteUsers = newList;
+            // console.log(this.remoteUsers)
+            // store.commit("setLiveVideos", this.remoteUsers);
+          }
         }
       }
     });
@@ -166,7 +174,7 @@ LiveRTC.prototype.startScreenShare = async function (channel, token, id, isHost)
   try {
     await this.screenClient.join(this.options.appid, channel, token, id);
 
-    this.screenTrack = await AgoraRTC.createScreenVideoTrack();
+    this.screenTrack = await AgoraRTC.createScreenVideoTrack({optimizationMode: "motion"});
     await this.screenClient.publish(this.screenTrack);
     console.log("Screen share success");
     this.screenTrack.on('track-ended', async (e) => {
@@ -274,7 +282,7 @@ LiveRTC.prototype.handleUserUnpublished = function (user, mediaType) {
     for (let i = 0; i < this.remoteUsers.length; i++) {
       if (this.remoteUsers[i].uid == id) {
         this.remoteUsers[i].hasVideoTrack = false
-        // if(this.remoteUsers[i].hasAudioTrack !== true) 
+        // if(this.remoteUsers[i].hasAudioTrack !== true)
         //   this.remoteUsers.splice(i, 1)
       }
     }
@@ -284,12 +292,13 @@ LiveRTC.prototype.handleUserUnpublished = function (user, mediaType) {
     for (let i = 0; i < this.remoteUsers.length; i++) {
       if (this.remoteUsers[i].uid == id) {
         this.remoteUsers[i].hasAudioTrack = false
-        // if(this.remoteUsers[i].hasVideoTrack !== true) 
+        // if(this.remoteUsers[i].hasVideoTrack !== true)
         //   this.remoteUsers.splice(i, 1)
       }
     }
   }
   store.commit("setLiveVideos", this.remoteUsers);
 }
+
 
 export { LiveRTC };

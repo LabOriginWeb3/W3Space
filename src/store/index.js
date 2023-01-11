@@ -10,7 +10,7 @@ export default new Vuex.Store({
     nearByMsg: JSON.parse(localStorage.getItem("nearByMsg")) || [],
     talkMsg: JSON.parse(localStorage.getItem("talkMsg")) || [],
     openScreen: localStorage.getItem("openScreen") || false,
-    role: (localStorage.getItem("role") == 'true' || !localStorage.getItem("role"))?{id:1,nftname:'',nftid:0,name:''} : JSON.parse(localStorage.getItem("role")),
+    role: (localStorage.getItem("role") == 'true' || !localStorage.getItem("role")) ? { id: 1, nftname: '', nftid: 0, name: '' } : JSON.parse(localStorage.getItem("role")),
     roleInfo: localStorage.getItem("roleInfo") || {},
     openLiveScreen: localStorage.getItem("openLiveScreen") || false,
     officeSpaceAddress: localStorage.getItem("officeSpaceAddress") || "",
@@ -19,10 +19,12 @@ export default new Vuex.Store({
     helpStatus: JSON.parse(localStorage.getItem("helpStep")) || { helpStep: 0 },
     teamMsg: JSON.parse(localStorage.getItem("teamMsg")) || [],
     teamId: localStorage.getItem("teamId") || 0,
+    friendsList: JSON.parse(localStorage.getItem("friendsList")) || [],
+    otherInfoList: JSON.parse(localStorage.getItem("otherInfoList")) || [],
   },
   mutations: {
     setConns(state, newConns) {
-      console.log("setConns", newConns);
+      // console.log("setConns", newConns);
       let arr = [];
       if (newConns.length != 0) {
         for (let j = 0; j < newConns[newConns.length - 1].sindex + 1; j++) {
@@ -39,6 +41,15 @@ export default new Vuex.Store({
     setLiveVideos(state, newVideos) {
       state.liveVideos = [];
       state.liveVideos = newVideos;
+    },
+    setFriendsList(state, newList) {
+      console.log(newList)
+      localStorage.setItem("friendsList", newList);
+      state.friendsList = JSON.parse(newList);
+    },
+    setInfoList(state, newList) {
+      localStorage.setItem("otherInfoList", newList);
+      state.otherInfoList = JSON.parse(newList);
     },
     addNearByMsg(state, msg) {
       // console.log("msg is", msg);
@@ -79,6 +90,23 @@ export default new Vuex.Store({
       t = JSON.parse(localStorage.getItem("talkMsg"));
       state.talkMsg = t;
       // console.log("talkMsg", t);
+    },
+
+    removeTalkMsg(state, data) {
+      // console.log("removeTalkMsg", state, data.UserID, data.TargetID);
+      let talkList = [];
+      if (localStorage.getItem("talkMsg") != null) {
+        talkList = JSON.parse(localStorage.getItem("talkMsg"));
+      }
+      let newTalkList = talkList.filter(
+          (val) =>
+              (val.sender !== data.TargetID && val.target !== data.TargetID) &&
+              val.target !== 1
+      );
+
+      localStorage.setItem("talkMsg", JSON.stringify(newTalkList));
+      newTalkList = JSON.parse(localStorage.getItem("talkMsg"));
+      state.talkMsg = newTalkList;
     },
 
     addTeamMsg(state, msg) {
