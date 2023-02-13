@@ -42,9 +42,9 @@ function MyWebRTC() {
   this.screenStatus = localStorage.getItem("screenStatus") == "true" ? true : false;
   this.windowOrder = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
   this.receiveBuffer = {},
-  this.receivedSize = {},
-  this.fileSize = {},
-  window.meterRefresh = null
+      this.receivedSize = {},
+      this.fileSize = {},
+      window.meterRefresh = null
 
   try {
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -56,10 +56,10 @@ function MyWebRTC() {
 
 MyWebRTC.prototype.isSupport = function () {
   navigator.getUserMedia =
-    navigator.getUserMedia ||
-    navigator.webkitGetUserMedia ||
-    navigator.mozGetUserMedia ||
-    navigator.msGetUserMedia;
+      navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia ||
+      navigator.msGetUserMedia;
   return navigator.getUserMedia != null;
 };
 
@@ -73,20 +73,6 @@ MyWebRTC.prototype.init = async function (games) {
         this.reloadAudio()
       }
     });
-    // if (this.openAudio || this.openVideo) {
-    //   let stream = await navigator.mediaDevices
-    //   .getUserMedia({ video: this.openVideo ? this.videoOption : false, audio: this.openAudio })
-    //   console.log('now stream is', stream)
-    //   let video = document.querySelector("#localVideo");
-    //   video.srcObject = stream;
-    //   video.playsInline = true;
-    //   video.play();
-    //   this.localStream = stream;
-
-    //   return true
-    // } else {
-    //   return true
-    // }
 
   } catch (error) {
     console.log(error)
@@ -100,7 +86,7 @@ MyWebRTC.prototype.openMedia = async function (e) {
     if (this.localStream)
       this.localStream.getTracks().forEach((track) => track.stop())
     let stream = await navigator.mediaDevices
-      .getUserMedia({ video: this.openVideo ? this.videoOption : false, audio: this.openAudio })
+        .getUserMedia({ video: this.openVideo ? this.videoOption : false, audio: this.openAudio })
 
     this.localStream = stream
     let video = document.querySelector("#localVideo");
@@ -152,25 +138,25 @@ MyWebRTC.prototype.handleSuccess = async function(stream) {
     console.log(e)
     let showSpeaking = false
     if(!window.meterRefresh)
-    window.meterRefresh = setInterval(() => {
-      let sound = soundMeter.slow.toFixed(2)
-      // console.log(sound);// while > 0.02,speaking
-      if(sound > 0.02 && showSpeaking == false) {
-        // console.log(2)
-        that.sendToGdevelop("showSpeaking", {
-          status: 2
-        })
-        showSpeaking = true
-      }
+      window.meterRefresh = setInterval(() => {
+        let sound = soundMeter.slow.toFixed(2)
+        // console.log(sound);// while > 0.02,speaking
+        if(sound > 0.02 && showSpeaking == false) {
+          // console.log(2)
+          that.sendToGdevelop("showSpeaking", {
+            status: 2
+          })
+          showSpeaking = true
+        }
 
-      if(sound <= 0.02 && showSpeaking == true) {
-        // console.log(3)
-        that.sendToGdevelop("showSpeaking", {
-          status: 3
-        })
-        showSpeaking = false
-      }
-    }, 500);
+        if(sound <= 0.02 && showSpeaking == true) {
+          // console.log(3)
+          that.sendToGdevelop("showSpeaking", {
+            status: 3
+          })
+          showSpeaking = false
+        }
+      }, 500);
   });
 }
 
@@ -179,7 +165,7 @@ MyWebRTC.prototype.reloadAudio = async function () {
     if (this.localStream)
       this.localStream.getTracks().forEach((track) => track.stop())
     let stream = await navigator.mediaDevices
-      .getUserMedia({ video: this.openVideo ? this.videoOption : false, audio: this.openAudio })
+        .getUserMedia({ video: this.openVideo ? this.videoOption : false, audio: this.openAudio })
 
     this.localStream = stream
     let video = document.querySelector("#localVideo");
@@ -227,69 +213,69 @@ MyWebRTC.prototype.closeMedia = function (e) {
 
 MyWebRTC.prototype.shareScreenStream = function () {
   navigator.mediaDevices
-    .getDisplayMedia({
-      video: {
-        cursor: "always",
-        width: { ideal: 1280 },
-        height: { ideal: 720 },
-        frameRate: { ideal: 10, max: 15 }
-      },
-      audio: false
-    })
-    .then(async (mediaStream) => {
-      var video = document.querySelector("#localScreenSelf");
-      video.srcObject = mediaStream;
-      video.playsInline = true;
-      video.play();
-      this.mediaStream = mediaStream;
-      this.screenStatus = true
-      store.commit("setOpenScreen", true);
+      .getDisplayMedia({
+        video: {
+          cursor: "always",
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+          frameRate: { ideal: 10, max: 15 }
+        },
+        audio: false
+      })
+      .then(async (mediaStream) => {
+        var video = document.querySelector("#localScreenSelf");
+        video.srcObject = mediaStream;
+        video.playsInline = true;
+        video.play();
+        this.mediaStream = mediaStream;
+        this.screenStatus = true
+        store.commit("setOpenScreen", true);
 
-      // console.log('this.mediaStream.getTracks()', this.mediaStream.getTracks())
-
-
-
-      this.conns.forEach((peer) => {
-        if (peer.getSenders()[2].track) {
-          peer.getSenders()[2].replaceTrack(this.mediaStream.getTracks()[0])
-        } else if (peer.getSenders()[1].track && !peer.hasVideoTrack) {
-          peer.getSenders()[1].replaceTrack(this.mediaStream.getTracks()[0])
-        } else {
-          this.refreshOffer(peer.targetID)
-        }
-      });
-
-      let arr1 = [];
-      for (let j = 0; j < this.conns.length; j++) {
-        arr1.push(this.conns[j].targetID);
-      }
-      this.sendToGdevelop("screenStatus", {
-        targetID: arr1,
-        status: true,
-      });
+        // console.log('this.mediaStream.getTracks()', this.mediaStream.getTracks())
 
 
 
-      const that = this;
-
-      mediaStream.getTracks()[0].onended = function () {
-        that.mediaStream = null;
-        that.screenStatus = false;
-        store.commit("setOpenScreen", false);
-
-        let arr = [];
-        for (let i = 0; i < that.conns.length; i++) {
-          arr.push(that.conns[i].targetID);
-        }
-        that.sendToGdevelop("screenStatus", {
-          targetID: arr,
-          status: false,
+        this.conns.forEach((peer) => {
+          if (peer.getSenders()[2].track) {
+            peer.getSenders()[2].replaceTrack(this.mediaStream.getTracks()[0])
+          } else if (peer.getSenders()[1].track && !peer.hasVideoTrack) {
+            peer.getSenders()[1].replaceTrack(this.mediaStream.getTracks()[0])
+          } else {
+            this.refreshOffer(peer.targetID)
+          }
         });
-      };
-    })
-    .catch((err) => {
-      console.log("cannot init getDisplayMedia", err);
-    });
+
+        let arr1 = [];
+        for (let j = 0; j < this.conns.length; j++) {
+          arr1.push(this.conns[j].targetID);
+        }
+        this.sendToGdevelop("screenStatus", {
+          targetID: arr1,
+          status: true,
+        });
+
+
+
+        const that = this;
+
+        mediaStream.getTracks()[0].onended = function () {
+          that.mediaStream = null;
+          that.screenStatus = false;
+          store.commit("setOpenScreen", false);
+
+          let arr = [];
+          for (let i = 0; i < that.conns.length; i++) {
+            arr.push(that.conns[i].targetID);
+          }
+          that.sendToGdevelop("screenStatus", {
+            targetID: arr,
+            status: false,
+          });
+        };
+      })
+      .catch((err) => {
+        console.log("cannot init getDisplayMedia", err);
+      });
 };
 
 MyWebRTC.prototype.checkPeerStatus = function (arr) {
@@ -297,7 +283,7 @@ MyWebRTC.prototype.checkPeerStatus = function (arr) {
   for (let i = 0; i < arr.length; i++) {
     if (arr[i].canconn == false) {
       this.closePeer(arr[i].id)
-    } 
+    }
   }
 }
 
@@ -411,25 +397,25 @@ MyWebRTC.prototype.createOffer = async function (targetID) {
   let opeer = this.getConnByID(targetID);
   // console.log('opeer.connectionState', opeer)
   if (
-    opeer != null && opeer.connectionState == "connected"
+      opeer != null && opeer.connectionState == "connected"
   ) {
     console.log(
-      "peer already exist"
+        "peer already exist"
     );
     return;
   }
   if (
-    opeer != null && (opeer.connectionState == "new" || opeer.connectionState == 'connecting')
+      opeer != null && (opeer.connectionState == "new" || opeer.connectionState == 'connecting')
   ) {
     console.log(
-      "peer is connecting", opeer
+        "peer is connecting", opeer
     );
     return;
   }
 
   if (
-    opeer != null &&
-    (opeer.connectionState == 'disconnected' || opeer.connectionState == 'failed' || opeer.connectionState == 'closed')
+      opeer != null &&
+      (opeer.connectionState == 'disconnected' || opeer.connectionState == 'failed' || opeer.connectionState == 'closed')
   ) {
     for (var i = 0; i < this.conns.length; i++) {
       if (this.conns[i].targetID == targetID) {
@@ -465,8 +451,8 @@ MyWebRTC.prototype.createOffer = async function (targetID) {
     let i = this.windowOrder.indexOf(0);
     if (this.windowOrder.indexOf(targetID) > -1) {
       console.log(
-        "createOffer error, targetID already in windowOrder",
-        targetID
+          "createOffer error, targetID already in windowOrder",
+          targetID
       );
       return;
     }
@@ -502,8 +488,8 @@ MyWebRTC.prototype.onReceiveMessageCallback = function (data, id) {
     a.href = URL.createObjectURL(received);
     a.download = this.fileSize[id].name;
     a.textContent =
-      `Click to download '${this.fileSize[id].name}' (${this.fileSize[id].fileSize} bytes)`;
-      a.style.display = 'block'
+        `Click to download '${this.fileSize[id].name}' (${this.fileSize[id].fileSize} bytes)`;
+    a.style.display = 'block'
   }
 };
 
@@ -556,41 +542,41 @@ MyWebRTC.prototype.createPeer = async function (targetID) {
   };
 
   peer.addEventListener(
-    "track",
-    async (e) => {
-      // console.log("get trackInfo", e);
-      let id = this.getConnsOrder(targetID);
-      if (e.track.kind == 'video') {
-        if (peer.screenStatus == false && peer.videoStatus == false) return
-        peer.videoAmount += 1
-        if (peer.videoAmount == 2 && (peer.screenStatus == false || peer.videoStatus == false)) {
-          return
-        }
+      "track",
+      async (e) => {
+        // console.log("get trackInfo", e);
+        let id = this.getConnsOrder(targetID);
+        if (e.track.kind == 'video') {
+          if (peer.screenStatus == false && peer.videoStatus == false) return
+          peer.videoAmount += 1
+          if (peer.videoAmount == 2 && (peer.screenStatus == false || peer.videoStatus == false)) {
+            return
+          }
 
-        if (peer.videoAmount > 1 || peer.videoStatus == false) {
-          // console.log('this is a screen')
-          var domName = "#remoteScreen" + (id + 1);
-          var screen = document.querySelector(domName);
-          screen.srcObject = e.streams[0];
-          screen.playsInline = true;
-          // screen.style.display = "block";
+          if (peer.videoAmount > 1 || peer.videoStatus == false) {
+            // console.log('this is a screen')
+            var domName = "#remoteScreen" + (id + 1);
+            var screen = document.querySelector(domName);
+            screen.srcObject = e.streams[0];
+            screen.playsInline = true;
+            // screen.style.display = "block";
+          } else {
+            // console.log('this is a video')
+            var name = "#remoteVideo" + (id + 1);
+            var video = document.querySelector(name);
+            video.srcObject = e.streams[0];
+            video.playsInline = true;
+            video.style.display = "block";
+          }
         } else {
-          // console.log('this is a video')
-          var name = "#remoteVideo" + (id + 1);
-          var video = document.querySelector(name);
-          video.srcObject = e.streams[0];
-          video.playsInline = true;
-          video.style.display = "block";
+          var name2 = "#remoteVideo" + (id + 1);
+          var audio = document.querySelector(name2);
+          audio.srcObject = e.streams[0];
+          audio.playsInline = true;
+          audio.style.display = "block";
         }
-      } else {
-        var name2 = "#remoteVideo" + (id + 1);
-        var audio = document.querySelector(name2);
-        audio.srcObject = e.streams[0];
-        audio.playsInline = true;
-        audio.style.display = "block";
-      }
-    },
-    false
+      },
+      false
   );
 
   peer.addEventListener('connectionstatechange', event => {
@@ -624,12 +610,12 @@ MyWebRTC.prototype.trackStatus = function (trackId) {
 
 // Description The remote initiator is received
 MyWebRTC.prototype.onRecvOffer = async function (
-  id,
-  sdp,
-  audioStatus,
-  videoStatus,
-  screenStatus,
-  name
+    id,
+    sdp,
+    audioStatus,
+    videoStatus,
+    screenStatus,
+    name
 ) {
   // console.log("onRecvOffer", id, audioStatus, videoStatus, screenStatus, 'now conns is', this.conns);
 
@@ -651,7 +637,7 @@ MyWebRTC.prototype.onRecvOffer = async function (
   peer.ondatachannel = (event)=> {
     var channel = event.channel;
     channel.onmessage = (event) => {
-      
+
       if(typeof(event.data) == 'string') {
         store.commit("addNearByMsg", JSON.parse(event.data));
         let res = JSON.parse(event.data)
@@ -686,28 +672,28 @@ MyWebRTC.prototype.onRecvOffer = async function (
   }
   store.commit("setConns", this.conns);
   peer
-    .setRemoteDescription(sdp)
-    .then(() => {
-      peer
-        .createAnswer(this.offerOptions)
-        .then((mysdp) => {
-          mysdp = { type: mysdp.type, sdp: BandwidthHandler.setApplicationSpecificBandwidth(mysdp.sdp, this.bandwidth, this.screenStatus) };
-          peer.setLocalDescription(mysdp);
-          this.sendToGdevelop("answer", {
-            targetID: id,
-            sdp: mysdp,
-            audioStatus: this.openAudio,
-            videoStatus: this.openVideo,
-            screenStatus: this.screenStatus
-          });
-        })
-        .catch((err) => {
-          console.log("createAnswer error", err);
-        });
-    })
-    .catch((err) => {
-      console.log("setRemoteDescription error", err);
-    });
+      .setRemoteDescription(sdp)
+      .then(() => {
+        peer
+            .createAnswer(this.offerOptions)
+            .then((mysdp) => {
+              mysdp = { type: mysdp.type, sdp: BandwidthHandler.setApplicationSpecificBandwidth(mysdp.sdp, this.bandwidth, this.screenStatus) };
+              peer.setLocalDescription(mysdp);
+              this.sendToGdevelop("answer", {
+                targetID: id,
+                sdp: mysdp,
+                audioStatus: this.openAudio,
+                videoStatus: this.openVideo,
+                screenStatus: this.screenStatus
+              });
+            })
+            .catch((err) => {
+              console.log("createAnswer error", err);
+            });
+      })
+      .catch((err) => {
+        console.log("setRemoteDescription error", err);
+      });
   if (navigator.userAgent.indexOf('Firefox') >= 0) {
     this.sendToGdevelop("connectok", peer.targetID);
   }
@@ -715,12 +701,12 @@ MyWebRTC.prototype.onRecvOffer = async function (
 
 // The remote response is received.
 MyWebRTC.prototype.onRecvAnswer = async function (
-  id,
-  sdp,
-  audioStatus,
-  videoStatus,
-  screenStatus,
-  name
+    id,
+    sdp,
+    audioStatus,
+    videoStatus,
+    screenStatus,
+    name
 ) {
   var peer = this.getConnByID(id);
   if (peer == null) {
@@ -758,8 +744,8 @@ MyWebRTC.prototype.onRecvICECandidate = function (id, icecandidate) {
     return;
   }
   peer
-    .addIceCandidate(icecandidate)
-    .catch((e) => console.log("addIceCandidate error", e));
+      .addIceCandidate(icecandidate)
+      .catch((e) => console.log("addIceCandidate error", e));
 };
 
 MyWebRTC.prototype.closePeer = async function (id) {
@@ -785,7 +771,7 @@ MyWebRTC.prototype.closePeer = async function (id) {
 };
 
 MyWebRTC.prototype.sendToGdevelop = async function (cmd, param) {
-  // console.log("sendToGdevelop", cmd, param);
+  console.log("sendToGdevelop", cmd, param);
   await this.games.setH5Data(cmd, param);
 };
 
