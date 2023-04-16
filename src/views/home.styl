@@ -2,9 +2,9 @@
 .home
   position relative
   height 100%
-  --zoomV:0.8;
+  --zoomV 0.8
   --showV 160px
-  --showVRight 7px
+  --showVRight 45px
   --showVTop 180px
   --width 140px
   --height 100px
@@ -16,13 +16,15 @@
   --settingTop none
   --iconWidth 15px
   --borderWidth 25px
-  --topM 190px
+  --topM 200px
   --tipTop 132px
   --tipLeft -14px
+  --showRightListP 0px
+  --localAreaShowRight 75px
 .apply
   position fixed
-  top: 50px;
-  left: 120px;
+  top 50px
+  left 120px
   z-index 10
   cursor pointer
   img
@@ -33,8 +35,8 @@
       content url('../assets/build.png')
 .homeLogo
   position fixed
-  top: 40px;
-  left: 25px;
+  top 40px
+  left 25px
   z-index 10
   cursor pointer
   width 75px
@@ -66,32 +68,32 @@
   top 0
   bottom 0
 #board
-  width 40%
+  width 600px
   height 30%
   position absolute
   left 0
   bottom 0
   background #fff
-  left: 40%;
-  top: calc(20% + 35px)
-  border-radius: 10px;
-  border: 8px solid #383838;
-  box-shadow: 8px 8px 3px -3px #000;
+  left 40%
+  top calc(20% + 35px)
+  border-radius 10px
+  border 8px solid #383838
+  box-shadow 8px 8px 3px -3px #000
   .board-close
     position fixed
-    background: #383838;
-    border-radius: 0px 10px;
-    color: #fff;
-    width: 50px;
-    margin-left: 37%;
-    margin-top: -10px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 35px;
-    z-index: 2;
-    cursor: pointer;
+    background #383838
+    border-radius 0px 10px
+    color #fff
+    width 50px
+    margin-left calc(600px - 45px)
+    margin-top -10px
+    height 40px
+    display flex
+    justify-content center
+    align-items center
+    font-size 35px
+    z-index 2
+    cursor pointer
 .online
   background #60FF98
 .away
@@ -169,23 +171,100 @@
       background #000
       border-radius 5px
   .laber
-    z-index: 3;
+    z-index 3
   .video-controls
-    z-index: 2
-    
+    z-index 2
 .localArea-show
-  right 30px
+  right var(--localAreaShowRight)
   position fixed
   display flex
-  width var(--width)
-  top 70px
+  // width var(--width)
+  top 90px
+  z-index 2
   .video-center
-    margin-left: 0
+    margin-left 0
   .video-setting
     bottom 0px
   .video-setting
     bottom 0px
     background rgb(20 19 19)
+  // .video-outers
+  // width var(--width)
+  // height var(--height)
+  // border-radius 5px
+  // &:hover
+  // width var(--width)
+  // height var(--height)
+  // .video-controls
+  // z-index: 2;
+  // .video-content, .selfVideoLoading, .my-avatar
+  // width var(--width)
+  // height var(--height)
+  // border-radius 5px
+  // .video-controls
+  // position: absolute;
+  // top: unset;
+  // bottom: 0;
+  // z-index: 2;
+  // width: 100%;
+  // height: 28px;
+  // display: flex;
+  // align-items: center;
+  // border 0;
+  // border-radius: none;
+  // .videoBtn
+  // background: #ffffff2e;
+  // border-radius: 50%;
+  // display: flex;
+  // padding: 2px;
+  // top: 0px;
+  // right: 0;
+  // left: calc(100% - 56px) !important;
+  // .audioBtn
+  // background: #ffffff2e;
+  // border-radius: 50%;
+  // display: flex;
+  // padding: 2px;
+  // top: 0px;
+  // right: 0;
+  // left: calc(100% - 85px) !important;
+  // .screen-controls
+  // right: 6px
+  // background: #ffffff2e;
+  // border-radius: 50%;
+  // display: flex;
+  // padding: 2px;
+  // top: 0px !important;
+
+  // .laber
+  // z-index: 3;
+  // padding-left: 5px;
+  // height: 20px;
+  // top: 5px;
+  // font-weight: 700;
+  // font-size: 14px;
+  // max-width: 90%;
+  // left: 0;
+  // p
+  // text-align: left
+  // width: 100%;
+  // margin-left: 0;
+  // padding-left: 5px;
+  .tip-top
+    display none
+.localArea-active
+  position fixed
+  left 5%
+  width 75%
+  height calc(100% - 180px)
+  top 5%
+  .video-Wrapper
+    display flex
+    justify-content center
+    align-items center
+    .video-audio-video
+      display flex
+      align-items center
   .video-outers
     width var(--width)
     height var(--height)
@@ -194,68 +273,92 @@
       width var(--width)
       height var(--height)
       .video-controls
-        z-index: 2;
+        z-index 2
   .video-content, .selfVideoLoading, .my-avatar
     width var(--width)
     height var(--height)
     border-radius 5px
   .video-controls
-    position: absolute;
-    top: unset;
-    bottom: 0;
-    z-index: 2;
-    width: 100%;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    border 0;
-    border-radius: none;
+    position absolute
+    top unset
+    bottom 0
+    z-index 2
+    width 100%
+    height 28px
+    display flex
+    align-items center
+    border 0
+    border-radius none
     .videoBtn
-      top: calc(50% - 9px);
+      background #ffffff2e
+      border-radius 50%
+      display flex
+      padding 2px
+      top 0px
+      right 0
+      left calc(100% - 56px) !important
     .audioBtn
-      left: 6px;
+      background #ffffff2e
+      border-radius 50%
+      display flex
+      padding 2px
+      top 0px
+      right 0
+      left calc(100% - 85px) !important
   .screen-controls
-    right: 6px
-  
+    right 6px
+    background #ffffff2e
+    border-radius 50%
+    display flex
+    padding 2px
+    top 0px !important
   .laber
-    top: 6px;
-    z-index: 3;
-    padding-left: 5px;
-    height: 20px;
+    z-index 3
+    padding-left 5px
+    height 20px
+    top 5px
+    font-weight 700
+    font-size 14px
+    max-width 90%
+    left 0
     p
-     text-align: left
-     width: 100%;
-     margin-left: 0;
-     padding-left: 5px;
-  .tip-top
-    display: none
-.localArea-active
-  position fixed
-  left 5%
-  width 75%
-  height 90%
-  top 5%
+      text-align left
+      width 100%
+      margin-left 0
+      padding-left 5px
   .video-outers
-    width: 100%;
-    height: 100%
+    width 100%
+    height 100%
     &:hover
-      width: 100%;
-      height: 100%
+      width 100%
+      height 100%
   .video-content
-    width: 100%;
-    height: 100%
+    width 100%
+    height 100%
   .video-controls
-    height: 50px;
-    .videoBtn,.audioBtn,.screen-controls
-      top: 10px;
+    height 50px
+    justify-content center
+    margin-bottom -80px
+    .audioBtn, .videoBtn
+      position inherit
   .screen-controls
-    width 40px !important
-    height 40px !important
+    border-radius 50%
+    background #70EF8D !important
+    right inherit
+    position inherit
+    padding 0
+    margin 10px
     img
-      width 32px !important
-      height 32px !important
+      width 40px
+      border-radius 50%
+      margin 0 !important
   .laber
-    font-size 20px
+    width 100%
+    top 10px
+    left 10px
+    font-weight 700
+    p
+      font-size 20px
   .video-window
     background #000
     width 100%
@@ -263,22 +366,24 @@
     border-radius 5 !important
     border 0
   .video-center
-    margin-left: 0
+    margin-left 0
   .my-avatar
     width 100%
     height 100%
     .status
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      margin-top: 70px;
-      margin-left: -20px;
+      width 12px
+      height 12px
+      border-radius 50%
+      margin-top 70px
+      margin-left -20px
     img
       width 100px
       height 100px
   .video-controls img
-    width 32px
-    height 32px
+    width 35px
+    background #70EF8D !important
+    padding 5px !important
+    margin 10px
   .video-setting
     width 98.6%
     height 60px
@@ -290,6 +395,8 @@
     height 100%
     img
       width 10%
+  .video-controls .closeBtn
+    background #b8b9b8 !important
 .localScreen
   margin-left 15px
   width var(--width)
@@ -305,7 +412,7 @@
   top 5%
   .selfScreenLoading
     width 100%
-    height: 100%
+    height 100%
     img
       width 10%
 .remote-window
@@ -313,18 +420,71 @@
   display flex
   white-space nowrap
   align-items center
-  // zoom var(--zoomV)
+// zoom var(--zoomV)
 .remote-window-active
   display block !important
   position fixed !important
   left 5%
   width 75% !important
-  height 90% !important
+  height calc(100% - 180px) !important
   top 5%
+  &.remote-window-active-Screen
+    margin-left 0 !important
+  .video-outers, .video-content, .remoteVideoLoading, .my-avatar
+    width var(--width)
+    height var(--height)
+    border-radius 5px
+  .video-controls
+    position absolute
+    top unset
+    bottom 0
+    z-index 2
+    width 100%
+    height 28px
+    display flex
+    align-items center
+    border 0
+    border-radius none
+    .videoBtn
+      background rgba(255, 255, 255, 0.18)
+      border-radius 50%
+      display flex
+      padding 2px
+      top 0px
+      right 0
+      left calc(100% - 28px) !important
+    .audioBtn
+      background rgba(255, 255, 255, 0.18)
+      border-radius 50%
+      display flex
+      padding 2px
+      top 0px
+      right 0
+      left calc(100% - 56px) !important
+  .screen-controls
+    right 6px
+  .screen-window
+    margin-left 0
+  .laber
+    top 5px
+    z-index 3
+    padding-left 5px
+    height 20px
+    font-weight 700
+    p
+      text-align left
+      width 100%
+      margin-left 0
+      padding-left 5px
   .laber
     font-size 20px
     display flex
     align-items center
+    top 10px
+    left 10px
+    justify-content space-between
+    p
+      font-size 20px
     img
       width 30px
       height 30px
@@ -334,44 +494,53 @@
     height 100%
     border 0 !important
   .video-center
-    margin-left: 0px
+    margin-left 0px
   .my-avatar
-    width: 100% !important;
-    height: 100% !important;
+    width 100% !important
+    height 100% !important
     img
       width 100px
       height 100px
   .video-controls img
-    width 32px
-    height 32px
+    width 36px
+    padding 5px !important
+    background #70EF8D !important
+    position inherit
+    margin 10px
   .my-avatar
     .status
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      margin-top: 70px;
-      margin-left: -20px;
+      width 12px
+      height 12px
+      border-radius 50%
+      margin-top 70px
+      margin-left -20px
   .remoteVideoLoading, .remoteScreenLoading
     height 100% !important
     width 100% !important
     img
       width 10%
   .video-outers
-    width: 100% !important;
-    height: 100% !important;
+    width 100% !important
+    height 100% !important
     &:hover
-      width: 100% !important;
-      height: 100% !important;
+      width 100% !important
+      height 100% !important
   .video-content
-    width: 100% !important;
-    height: 100% !important;
+    width 100% !important
+    height 100% !important
   .video-controls
-    height: 50px !important;
-    .videoBtn,.audioBtn,.screen-controls
-      top: 10px !important;
+    height 50px !important
+    justify-content center
+    margin-bottom -80px
   .video-screen
-    width: 100%
-    height: 100%
+    width 100%
+    height 100%
+  .video-audio-video
+    display flex
+    justify-content center
+    align-content center
+  .video-controls .closeBtn
+    background #b8b9b8 !important
 .video-window
   background #314237
   border-radius 5px
@@ -380,7 +549,7 @@
   height var(--height)
   cursor pointer
 .video-center
-  margin-left: -20px
+  margin-left -20px
 .video-outers
   position relative
   width var(--height)
@@ -393,10 +562,10 @@
   transition all 0.3s linear
   &:hover
     .video-controls
-      z-index: 2;
+      z-index 2
       transition all 0.3s linear
     .laber
-      z-index: 3;
+      z-index 3
 .video-content
   position relative
   display inline-block
@@ -422,8 +591,8 @@
     overflow hidden
     text-overflow ellipsis
     font-size 14px
-    width: 60%;
-    margin-left: 20%;
+    width 60%
+    margin-left 20%
   img
     width 18px
 .change-vote
@@ -475,9 +644,9 @@
   right 0
   left 0
   bottom 0
-  border: var(--borderWidth) solid rgba(0,0,0,0.3);
-  border-radius: 50%;
-  cursor: pointer;
+  border var(--borderWidth) solid rgba(0, 0, 0, 0.3)
+  border-radius 50%
+  cursor pointer
   img
     width var(--iconWidth)
   .audioBtn
@@ -488,6 +657,10 @@
     position absolute
     top -40%
     left calc(50% - 9px)
+  .msgBtn
+    position absolute
+    right -40%
+    top calc(50% - 9px)
 .cross-line
   height 18px
   border-left 1px solid rgba(255, 255, 255, 0.1)
@@ -499,86 +672,57 @@
   overflow-x scroll
   transform scaleY(-1)
   padding-bottom 5px
-  margin-right: 35px;
-  top: -7px;
-  position: relative;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  overflow-y: hidden;
+  margin-right 35px
+  top -7px
+  position relative
+  padding-top 10px
+  padding-bottom 10px
+  overflow-y hidden
   .remote-window
     display inline-block
     transform scaleY(-1)
   .flex_align
     display flex
     align-items center
+    justify-content center
+    flex-wrap wrap
+    .video-outers
+      margin-bottom 10px !important
 .remote-window:not(:last-child)
   margin-right 30px
 .remote-windows-show
   position fixed
   right var(--showVRight) !important
-  padding 0 10px
-  /* left: 2%; */
+  padding 0 10px /* left: 2%; */
   justify-content flex-start
   width var(--showV)
   flex-wrap wrap
   white-space normal !important
   top var(--topM)
-  height calc(100% - 500px)
+  height auto
+  max-height calc(100% - 360px)
   overflow hidden
   overflow-y auto
   display block
   transform none
-  margin-right: 10px !important;
+  margin-right -15px !important
+  z-index 2
+  display flex
+  justify-content center
+  align-items center
   .video-center
-    margin-left: 0
+    margin-left 0
   .remote-window
     transform none
-  .remote-window:not(:last-child)
-    margin-bottom 30px
-    margin-right 0
-  .video-outers,.video-content,.remoteVideoLoading,.my-avatar
-    width: var(--width)
-    height: var(--height)
-    border-radius: 5px
-  .video-controls
-    position: absolute;
-    top: unset;
-    bottom: 0;
-    z-index: 2;
-    width: 100%;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    border 0;
-    border-radius: none;
-    .videoBtn
-      top: calc(50% - 9px);
-    .audioBtn
-      left: 6px;
-  .screen-controls
-    right: 6px
-  .screen-window
-    margin-left: 0
-  .laber
-    top: 6px;
-    z-index: 3;
-    padding-left: 5px;
-    height: 20px;
-    p
-     text-align: left
-     width: 100%;
-     margin-left: 0;
-    padding-left: 5px;
+    margin 15px 0
 .remote-top
   top var(--topM)
 .my-avatar
-  border-radius 50%
-  /* border: 2px solid hsla(0,0%,100%,.3); */
+  border-radius 50% /* border: 2px solid hsla(0,0%,100%,.3); */
   position absolute
   top 0
   width var(--height)
-  height var(--height)
-  /* left: calc(50% - 16px); */
+  height var(--height) /* left: calc(50% - 16px); */
   padding 0
   background #314237
   display flex
@@ -586,6 +730,8 @@
   align-items center
   z-index 1
   cursor pointer
+  // &:hover
+  // background #314237
   img
     width 20%
     border-radius 50%
@@ -599,12 +745,13 @@
 .menu
   position fixed
   top 250px
-  right 20px
+  right 0
   z-index 9
   width 60px
   height auto
   background #314237
-  border-radius 10px
+  border-bottom-left-radius 10px
+  border-top-left-radius 10px
   div
     margin 12px 7px
     cursor pointer
@@ -633,10 +780,8 @@
     margin-top -20px
 .menu-detail
   position fixed
-  top 30vh
-  right 80px
   top 250px
-  right 80px
+  right 62px
   z-index 9
   width 300px
   height 65vh
@@ -644,8 +789,8 @@
   text-align left
   background #F5F5F5
   border-radius 10px
-  border: 8px solid #383838;
-  box-shadow: 8px 8px 3px -3px #000;
+  border 8px solid #383838
+  box-shadow 8px 8px 3px -3px #000
   &.menuClose
     animation emove1 0.5s ease-in-out forwards
     @keyframes emove1
@@ -684,29 +829,37 @@
       background url('../assets/puthover.png')
       background-repeat no-repeat
   .message-menu
-    padding 0 15px
     text-align center
-    padding: 0 15px;
-    text-align: center;
-    background: #383838;
-    border-radius: 10px 10px 0px 0px;
-    color: #fff;
-    width: 116px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: -30px;
+    color #fff
+    display flex
+    align-items center
+    justify-content center
+    position absolute
+    top -31px
     .change-user
-      font-size 18px
+      font-weight 700
+      font-size 15px
       margin-right 10px
       cursor pointer
       display flex
       justify-content center
       align-items center
+      margin-left -8px
+      background #383838
+      height 30px
+      padding 0 8px
+      border-radius 10px 10px 0px 0px
+      border 1px solid #383838
+      border-bottom 0
+      color #fff
+      font-size 14px
+      max-width 120px
+      span
+        overflow hidden
+        text-overflow ellipsis
+        white-space nowrap
       .selectIcon
-        width 18px
+        width 16px
         margin-left 10px
     .change-menu
       width 142px
@@ -745,26 +898,29 @@
       font-size 15px
       .date
         text-align center
-        margin-bottom 20px
-        font-weight: 700;
-        font-size: 15px;
-        line-height: 20px;
+        margin-bottom 8px
+        font-weight 700
+        font-size 15px
+        line-height 20px
       img
         width 32px
         height 32px
       .avatar-head
-        border-radius: 50%
+        border-radius 50%
+        margin-right 5px
       span
         white-space pre-wrap
         word-wrap break-word
       .sendUser
         display flex
-        align-items center
         span
           font-size 12px
+          height 8px
+        .avatar-name
+          max-width 100px
+          margin-right 5px
+          font-weight 700
         div
-          width 200px
-          margin-left 10px
           .everyone
             color #6DFFCD
           .nearby
@@ -772,26 +928,30 @@
           .other
             color #FFC26D
       .sendMsg
-        word-wrap break-word
-        background #00000014
         border-radius 12px
-        margin 10px 0
-        padding 10px
+        padding 6px
         width fit-content
+        display -webkit-box
+        word-break break-all
+        span
+          user-select text
+        &:hover
+          background #00000014
         div
           max-width 205px
           word-break keep-all
         /deep/ img
+          width 25px
+          height 25px
+          margin 0 2px
+          vertical-align middle
+        /deep/ .female
           width 30px
           height 30px
-          margin 0 2px
-        /deep/ .female
-          width 50px
-          height 50px
         /deep/ #emoji-container > #emoji-popup .emoji-popover-inner > div > .emoji-list > span:hover
           background-color none
         &.self
-          background #60FF98
+          background #60FF98 !important
     .user-list
       text-align left
       padding 0 10px
@@ -818,26 +978,31 @@
         font-size 18px
         letter-spacing 0
         font-weight 400
-        margin 20px 0 15px
+        margin 15px 0 15px
         cursor pointer
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: #FFFFFF;
-        border-radius: 10px;
-        padding: 5px;
+        display flex
+        justify-content space-between
+        align-items center
+        background #FFFFFF
+        border-radius 10px
+        padding 5px
         div
-          margin: 0;
+          margin 0
           img
-            width: 16px;
-            height: 16px;
-            margin-right: 5px;
-            transform: rotate(-90deg);
+            width 16px
+            height 16px
+            margin-right 5px
+            transform rotate(-90deg)
           .openMenu
-            transform: rotate(0deg) !important;
+            transform rotate(0deg) !important
         span
-          font-size: 16px;
-          color: #808080b3;
+          font-size 15px
+          line-height 20px
+          margin-right 5px
+        p
+          font-weight 700
+          font-size 15px
+          line-height 20px
       div
         div
           display flex
@@ -849,7 +1014,7 @@
             width 32px
             height 32px
           .avatar-head
-            border-radius: 50%
+            border-radius 50%
           .status
             margin 0 5px
             width 10px
@@ -892,7 +1057,7 @@
       .followIcon
         width 100%
         height 20px
-        opacity: 0;
+        opacity 0
       .followIconIng
         width 100%
         height 20px
@@ -920,13 +1085,15 @@
         color #fff
   .send-message
     margin 15px 10px
-    height 65px
-    border 1px solid #314237
+    height auto
+    border 1px solid #c9d3cc
     border-radius 12px
     display flex
     align-items center
     padding 0 10px
-    background: #fff;
+    background #fff
+    &:hover
+      border 1px solid #314237
     .emoji
       width 25px
       height 25px
@@ -955,14 +1122,17 @@
       display flex
       flex 1
       background #fff !important
+      height auto
+      max-height 65px
     /deep/ .twemoji-textarea-outer > #twemoji-textarea
       overflow-x hidden
       padding 0
       margin 10px
       border-radius 0px
-      height 45px
+      height auto
       overflow-y auto
-      max-width 200px
+      max-width 180px
+      max-height 45px
       &:focus-visible
         outline none
     /deep/ #btn-emoji-default > div > img.emoji
@@ -973,6 +1143,8 @@
       display flex
       justify-content center
       align-items center
+    /deep/ #btn-emoji-default
+      height auto
     /deep/ .twemoji-textarea-outer > #twemoji-textarea > img.emoji
       margin 0 2px
     /deep/ #popper-inner
@@ -984,16 +1156,22 @@
       &.female
         height 40px
         width 40px
+    /deep/ #emoji-container > #emoji-popup .emoji-popover-inner > div > .emoji-list > span > img
+      margin 6px
     .sendMsgBth
-      width 32px
-      height 32px
+      height 30px
       background #60FF98
-      border-radius 16px
+      border-radius 6px
       display flex
       justify-content center
       align-items center
       cursor pointer
-      background-image linear-gradient(38deg, #60FF98 4%, #5ACFF8 47%, #B24FFD 98%, #B24FFD 99%)
+      padding 0 5px
+      color #fff
+      font-family 'Silkscreen'
+      font-size 12px
+      &:hover
+        background-image linear-gradient(38deg, #60FF98 4%, #5ACFF8 47%, #B24FFD 98%, #B24FFD 99%)
     #sendFile
       background-image linear-gradient(38deg, #60FF98 4%, #5ACFF8 47%, #B24FFD 98%, #B24FFD 99%)
       border-radius 16px
@@ -1011,23 +1189,23 @@
     /deep/ .twemoji-textarea-outer > #twemoji-textarea
       max-width 160px !important
 .tip-top
-  position: fixed;
-  margin-top: var(--tipTop);
-  margin-left: var(--tipLeft);
-  z-index: 12;
-  width: 130px;
-  height: auto;
-  background-color: #314237;
-  border-radius: 10px;
-  color: #fff;
-  top: 0;
+  position fixed
+  margin-top var(--tipTop)
+  margin-left var(--tipLeft)
+  z-index 12
+  width 130px
+  height auto
+  background-color #314237
+  border-radius 10px
+  color #fff
+  top 0
   &:before
     content ''
     display block
     border-width 15px
     position absolute
     top -25px
-    left: 48px;
+    left 48px
     border-style solid dashed dashed solid
     border-color transparent transparent #314237 transparent
     font-size 0
@@ -1074,7 +1252,7 @@
         display flex
         justify-content center
         align-items center
-        width: 20% !important;
+        width 20% !important
         &:hover
           border-radius 5px
           background rgba(255, 255, 255, 0.1)
@@ -1084,10 +1262,10 @@
         cursor pointer
       p
         font-size 14px
-        width: 100% !important;
-        margin-left: 0;
-        text-overflow: initial;
-        text-align: left;
+        width 100% !important
+        margin-left 0
+        text-overflow initial
+        text-align left
     div
       padding 5px 10px
       cursor pointer
@@ -1111,23 +1289,23 @@
       &:hover
         background rgba(207, 203, 203, 0.078)
 .menu-tip
-  position: fixed;
-  top: 258px;
-  right: 88px;
-  z-index: 11;
-  color: #fff;
-  text-align: left;
-  line-height: 30px;
-  cursor: pointer;
-  width: 300px;
-  height: auto;
-  max-height: 200px;
-  background: #383838;
-  cursor: pointer;
-  overflow-y: auto;
-  overflow-x: hidden;
-  font-size: 15px;
-  padding: 10px 0;
+  position fixed
+  top 258px
+  right 70px
+  z-index 11
+  color #fff
+  text-align left
+  line-height 30px
+  cursor pointer
+  width 300px
+  height auto
+  max-height 200px
+  background #383838
+  cursor pointer
+  overflow-y auto
+  overflow-x hidden
+  font-size 15px
+  padding 10px 0
   .chang-list
     overflow auto
     .unreadNum
@@ -1174,19 +1352,29 @@
       .unreadNum
         margin-left 20px
 .videoWrapper
-  background #000
-  width 100vw
-  height 105vh
+  background #121714
   position absolute
   z-index 99
   top 0
-  color #ffff
+  color #fff
+  border 15px solid #383838
+  width calc(100% - 28px)
+  height calc(100% - 28px)
   p
-    font-size 50px
-    text-align right
-    margin-right 2%
+    font-size 35px
     cursor pointer
-    padding-top 1vh
+    background #383838
+    border-radius 0px 10px
+    width 37px
+    height 37px
+    position fixed
+    right 0
+    display flex
+    justify-content center
+    align-items center
+    margin-top -5px
+    margin-right 10px
+    z-index 100
 .noteWrapper
   // background #1a1129
   width 100vw
@@ -1206,8 +1394,8 @@
   position absolute
   z-index 2
   width 40%
-  left: 40%;
-  top: 20%;
+  left 40%
+  top 20%
   .drag
     display flex
     justify-content space-between
@@ -1215,14 +1403,14 @@
     color #fff
     cursor pointer
     div
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #383838;
-      border-radius: 10px 10px 0px 0px;
-      padding: 7px;
-      img 
-        margin-right: 5px;
+      display flex
+      justify-content space-between
+      align-items center
+      background #383838
+      border-radius 10px 10px 0px 0px
+      padding 7px
+      img
+        margin-right 5px
   p
     font-size 40px
     color #fff
@@ -1244,20 +1432,21 @@
     height 400px
     border-radius 12px
     display flex
-    border-radius: 10px;
-    border: 8px solid #383838;
-    box-shadow: 8px 8px 3px -3px #000;
+    border-radius 10px
+    border 8px solid #383838
+    box-shadow 8px 8px 3px -3px #000
     .role
       width 60%
       padding 50px 36px
       text-align left
-      overflow-y: scroll
+      overflow-y scroll
+      background #f5f5f5
       p
         color #000000
         letter-spacing 0
-        font-weight: 700;
-        font-size: 20px;
-        line-height: 27px;
+        font-weight 700
+        font-size 20px
+        line-height 27px
       .avater
         display flex
         justify-content center
@@ -1273,7 +1462,7 @@
           justify-content center
           align-items center
           cursor pointer
-          border 2px solid #fff
+          border 2px solid #ffffff03
           border-radius 12px
           &.active
             border 2px solid rgba(96, 255, 152, 1)
@@ -1294,13 +1483,61 @@
           justify-content center
           align-items center
           cursor pointer
-          border 2px solid #fff
+          border 2px solid #fff0
           border-radius 12px
-          overflow: hidden
           &.active
             border 2px solid rgba(96, 255, 152, 1)
         img
           width 100%
+          border-radius 10px
+        h5
+          width 100%
+          display flex
+          justify-content space-between
+          align-items center
+          height 30px
+          background #fff
+          background #fff
+          border-radius 10px
+          padding 0 5px 0 0
+          cursor pointer
+          margin 16px 0
+          .nftName
+            width auto !important
+            padding initial !important
+            margin 0px !important
+            border none !important
+            margin-left -5px !important
+            span
+              font-weight 700
+              font-size 15px
+              line-height 20px
+          .nftImg
+            padding initial !important
+            margin 0px !important
+            border none !important
+            width 42px !important
+            height 42px !important
+            background #fff
+            border-radius 50px
+          img
+            width 30px !important
+            height 30px !important
+            border-radius 50% !important
+          p
+            display flex
+            align-items center
+            span
+              margin-right 5px
+              font-weight 400
+              font-size 15px
+              line-height 20px
+            img
+              width 13px !important
+              transform rotate(-90deg)
+              margin-right 0
+            .openMenu
+              transform rotate(0deg) !important
     .account
       width 40%
       background #60FF98
@@ -1311,9 +1548,9 @@
       p
         color #000000
         letter-spacing 0
-        font-weight: 700;
-        font-size: 20px;
-        line-height: 27px;
+        font-weight 700
+        font-size 20px
+        line-height 27px
         margin-bottom 10px
       span
         font-size 14px
@@ -1322,11 +1559,13 @@
       input
         margin-top 30px
         width 240px
-        height 60px
         border-radius 12px
         padding-left 10px
-        border 0px
         outline none
+        background #FFFFFF
+        border 1px solid #000000
+        border-radius 6px
+        height 50px
       .nameTips
         font-size 14px
         margin-top 10px
@@ -1347,7 +1586,7 @@
   width 160px
   height 40px
   margin-left -155px
-  font-family: "Silkscreen";
+  font-family 'Silkscreen'
   &:hover
     background #51e786
 .miniMap
@@ -1358,8 +1597,7 @@
   width var(--width)
   height var(--height)
   border-radius 5px
-  background rgba(0, 0, 0, 0.5)
-  /* border: 1px solid #60ff98; */
+  background rgba(0, 0, 0, 0.5) /* border: 1px solid #60ff98; */
   box-shadow 0px 0px 10px 0px #000
   --left 0
   --top 0
@@ -1384,6 +1622,15 @@
     overflow hidden
   .smallOffice
     background url('../assets/201.png')
+    background-size 100% 100%
+    height 100%
+    width 100%
+    background-repeat no-repeat
+    border-radius 5px
+    border 1px solid #60ff98
+    overflow hidden
+  .cyberMap
+    background url('../assets/105.png')
     background-size 100% 100%
     height 100%
     width 100%
@@ -1486,21 +1733,37 @@
   align-items center
   top 0
   .close_frame
-    margin-left: 425px !important;
+    margin-left 425px !important
   .officeCon
     width 450px
     height auto
-    background #fff
+    background #F5F5F5
     border-radius 12px
-    border-radius: 10px;
-    border: 8px solid #383838;
-    box-shadow: 8px 8px 3px -3px #000;
-    padding: 5px
+    border-radius 10px
+    border 8px solid #383838
+    box-shadow 8px 8px 3px -3px #000
+    padding 5px
+    user-select text
+    .type
+      display flex
+      justify-content center
+      margin-top 5px
+      p
+        cursor pointer
+        width 24%
+        border 2px solid #000
+        border-radius 6px
+        font-family 'Silkscreen'
+        &:not(:last-child)
+          margin-right 5px
+        &.choosed
+          background #60ff98
+          border-color #60ff98
     .bgImg
       display flex
       justify-content space-between
       &.bgImg_right
-        justify-content: end
+        justify-content end
       .left
         width 51px
         height 42px
@@ -1511,6 +1774,8 @@
       color #18203C
       margin 0
       font-size 20px
+      position relative
+      top -30px
   .textInfo
     margin 60px 40px 45px
     line-height 30px
@@ -1521,9 +1786,9 @@
     margin 40px 30px
     text-align left
     p
-      font-size: 16px;
-      color: #000;
-      font-weight: 700;
+      font-size 16px
+      color #000
+      font-weight 700
     div
       display flex
       margin 12px 0 30px
@@ -1547,7 +1812,7 @@
         color #000000
         margin-left 10px
         cursor pointer
-        font-family: "Silkscreen";
+        font-family 'Silkscreen'
       p
         width 208px
         height 50px
@@ -1573,26 +1838,37 @@
     align-items center
     cursor pointer
   .officeList
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    margin: 0 13%;
-    max-height: 255px;
-    overflow: hidden;
-    overflow-y: auto;
-    margin-top: 20px;
+    display flex
+    align-items center
+    flex-wrap wrap
+    margin 0 30px
+    height 330px
+    overflow hidden
+    overflow-y auto
+    margin-top 20px
+    p
+      width 100%
+      font-weight 700
+      font-size 14px
+      line-height 16px
+      display -webkit-box
+      -webkit-box-orient vertical
+      -webkit-line-clamp 1
+      overflow hidden
     .item
-      margin: 10px 10px;
-      width: 87px;
-      height 82px
-      border 2px solid #80808045
-      border-radius 12px
+      margin 10px 5px
+      width 110px
+      height 130px
+      border 2px solid #000
+      border-radius 8px
       display flex
       justify-content center
       align-items center
       cursor pointer
+      flex-wrap wrap
       img
         width 60px
+        margin-top 10px
       &.active
         border-color #60FF98
     p
@@ -1606,30 +1882,8 @@
   position relative
   margin-top 40px
   cursor pointer
-  .containerline
-    display none
-    width 100%
-    height 57px
-    .outline
-      position absolute
-      top 0
-      left 0
-      width 100%
-      height 100%
-      stroke #0bf5f4
-      stroke-width 3px
-      fill transparent
-  .container
-    width 155px
-    height 40px
-    border 2px solid #6f6f6f
-    border-radius 10px
-    margin-top 3px
-    margin-left 5px
-    cursor pointer
   .text
     font-size 16px
-    margin-top -47px
     text-align center
     width 160px
     height 47px
@@ -1643,35 +1897,12 @@
     align-items center
     font-size 16px
     color #000
-    font-family: "Silkscreen";
-  .text::after
-    content ' '
-    display inline-block
-    width 0
-    height 100%
-    vertical-align middle
-    margin-top 1px
+    font-family 'Silkscreen'
+    background #60ff98
+    border-radius 6px
   &:hover
-    .container
-      position absolute
-      top 4px
-      left 0px
     .text
-      position absolute
-      top 52px
-      left 0px
-    .containerline
-      display block
-      .outline
-        animation container 1s
-        animation-fill-mode forwards
-      @keyframes container
-        0%
-          stroke-dasharray 0 454
-          stroke-dashoffset 162
-        100%
-          stroke-dasharray 454 0
-          stroke-dashoffset 379
+      background #51e786
 #tetra-blocks
   width calc(100% - 40%)
   height calc(100% - 420px)
@@ -1685,12 +1916,12 @@
   background-color black
   border-radius 50% !important
   z-index 1
-  top: 0;
+  top 0
 .localArea-show
   #selfVideo
     width 100%
     height 100%
-    border-radius: 5px !important;
+    border-radius 5px !important
 .frame-gleap
   margin 0px
   position fixed
@@ -1713,14 +1944,15 @@
     cursor pointer
 .amamode
   position fixed
-  bottom 30px
+  bottom 50px
   z-index 9
   height auto
-  left calc(50% - 50px)
   color #fff
   font-weight 700
   display flex
+  justify-content center
   align-items center
+  left calc(50% - 120px)
   img
     width 30px
     height 30px
@@ -1732,6 +1964,7 @@
     padding 60px
     max-height 70%
     overflow auto
+    user-select text
   .pm
     display flex
     align-items center
@@ -1861,6 +2094,7 @@
   width var(--width)
 .remoteWindowNone
   display none !important
+  margin 0 !important
 .remoteWindowShow
   display inline-block !important
 .switch
@@ -1910,14 +2144,18 @@
 .createOffice
   margin-top 40px
   p
-    margin-bottom 30px
     display flex
     justify-content center
     align-items center
+    margin 30px 0
+    font-size 15px
+    line-height 20px
     input
       margin 0 4px
     label
-      font-size 13px
+      font-weight 700
+      font-size 15px
+      line-height 20px
   .input
     width 80%
     height 40px
@@ -1926,63 +2164,171 @@
     padding 0 10px
     outline none
     margin-left 10px
-
+    border 1px solid #000000
+    border-radius 6px
 .video-screen
   .video-content
-    width: var(--width);
-    border-radius: 5px;
+    width var(--width)
+    border-radius 5px
   .laber
-    z-index: 2
+    z-index 2
   .remoteVideoLoading
-    width: var(--width)
-
+    width var(--width)
 .flex_Toplist
-  position: fixed;
-  top: var(--localAreaTop);
-  right: var(--localAreaRight);
-  width calc(100% - 600px)
-  color: #000;
-  z-index: 100;
-  display: flex;
-  justify-content: flex-end;
+  position fixed
+  top var(--localAreaTop)
+  right var(--localAreaRight)
+  width calc(100% - 720px)
+  color #000
+  z-index 100
+  display flex
+  justify-content flex-end
 .contactsInfo
   &:hover
     .followIcon
       opacity 1 !important
 .user-status
-  position: absolute;
-  height: 300px;
-  width: 250px;
+  position absolute
+  height 300px
+  width 250px
 .light_wave
-  position: absolute;
-  z-index: 0;
-  top: -40px;
-  left: -36px;
+  position absolute
+  z-index 0
+  top -40px
+  left -36px
+  opacity 0
   img
-    width: 220px;
-    height: 220px;
+    width 220px
+    height 220px
+.waveNone
+  opacity 1
 .light_wave2
-  top: -45px !important;
-  left: -40px !important;
-  zoom: 0.7;
+  top -45px !important
+  left -40px !important
+  zoom 0.7
 .avatar-head
-  border-radius: 50%
-
+  border-radius 50%
 .my-avatar-screen
-  width: 100%
-
+  width 100%
 .close_frame
+  position fixed
+  background #383838
+  border-radius 0px 10px
+  color #fff
+  margin-left 785px
+  margin-top -8px
+  display flex
+  justify-content center
+  align-items center
+  font-size 22px
+  z-index 2
+  cursor pointer
+  height 37px
+  width 37px
+  img
+    width 16px
+    height 18px
+.mettingInvite
+  position fixed
+  top 20px
+  right 20px
+  z-index 9
+  width 60px
+  height auto
+  cursor pointer
+  img
+    width 60px
+    height 60px
+.showRightList
+  margin 35px 0 34px
+  background #33333352
+  border-radius 20px
+  height calc(100% - 160px)
+  width var(--showV)
+  position fixed
+  right 45px
+  padding var(--showRightListP)
+.remote-window-active-Screen
+  aspect-ratio auto 2 / 1.12
+  height auto !important
+  top 8% !important
+.sendMsgInfo
+  cursor default
+  .avatar-name
+    font-weight 700
+  span
+    font-size 14px
+    line-height 22px
+.tooltip
+  position relative
+  display inline-block
+  .tooltiptext
+    visibility hidden
+    width 100px
+    color #fff
+    text-align right
+    border-radius 6px
+    padding 5px
+    position absolute
+    z-index 1
+    right 100%
+    font-size 14px
+.tooltip:hover .tooltiptext
+  visibility visible
+.openOrstow
+  display none
+.remote-window-active
+  &.remote-window-active-Screen
+    .openOrstow
+      display block
+      cursor pointer
+    .laber
+      p
+        // width calc(100% - 100px)
+        width auto
+        padding 2px 5px
+        background #383838
+        border-radius 5px
+        color #60ff98
+        font-size 18px
+    .openS
+      content url('../assets/openS.svg')
+      background #383838
+      border-radius 6px
+      margin-right 30px
+    .stowS
+      content url('../assets/stowS.svg')
+      background #383838
+      border-radius 6px
+      margin-right 60px
+.openOrstow-Screen
+  left 15px !important
+  top 13px !important
+  z-index 2
+  transition all 0.2s
+  width calc(100% - 28px) !important
+  height calc(100% - 28px) !important
+  border-radius 0 !important
+.cyberW3ball
+  margin-top 20px
+  background rgba(0, 0, 0, 0.31)
+  display flex
+  flex-direction column
+  color #fff
+  align-items center
+  justify-content center
+  padding 10px
+  font-weight bold
+  border-radius 10px
+.wallet
   position: fixed;
-  background: #383838;
-  border-radius: 0px 10px;
-  color: #fff;
-  margin-left: 785px;
-  margin-top: -8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 22px;
-  z-index: 2;
+  top: 130px;
+  left: 25px;
+  z-index: 10;
   cursor: pointer;
-  height: 37px;
-  width: 37px;
+  color: #fff;
+  font-size: 14px;
+  .connectBotton
+    background: #314237;
+    padding: 5px 10px;
+    border-radius: 10px;
